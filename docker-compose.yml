@@ -1,0 +1,138 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./zhkh_frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./zhkh_frontend/src:/app/src
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://backend:8000
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./zhkh_backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./zhkh_backend:/app
+    depends_on:
+      database:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  database:
+    image: postgres:15
+    platform: linux/arm64/v8
+    container_name: database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: admin123
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - app_network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  migrations:
+    build:
+      context: ./zhkh_backend
+      dockerfile: Dockerfile
+    container_name: migrations
+    command: >
+      sh -c "while ! pg_isready -h database -p 5432 -U postgres; do sleep 1; echo 'Waiting for database...'; done
+      && alembic upgrade head
+      && PYTHONPATH=/app python /app/seeds/fill.py"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - app_network
+    restart: "no"
+    labels:
+      - "com.docker.compose.autoremove=true"
+
+  createbuckets:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Waiting for MinIO to be ready...';
+      mc alias set local http://minio:9000 admin admin123;
+      mc mb local/develbucket || true;
+      mc policy set public local/develbucket;
+      echo 'MinIO bucket develbucket created successfully';
+      "
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  minio_data:
+  postgres_data:
+  redis_data:

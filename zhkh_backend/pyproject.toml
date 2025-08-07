@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "ZHKH_SERVICE"
+version = "0.1.0"
+description = ""
+authors = ["Mikhail Tretyakov <Imtretyakov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.4"
+uvicorn = "^0.34.3"
+greenlet = "^3.0.3"
+dynaconf = "^3.2.6"
+openai = "^1.72.0"
+alembic = "^1.14.0"
+requests = "^2.32.3"
+aiohttp = "^3.11.16"
+asyncpg = "^0.30.0"
+psycopg = "^3.2.3"
+dependency-injector = "^4.43.0"
+sqlalchemy = "^2.0.36"
+bcrypt = "^4.3.0"
+email-validator = "^2.2.0"
+aioredis = "^2.0.1"
+orjson = "^3.10.16"
+redis = "^6.2.0"
+aiobotocore = "^2.23.0"
+pyjwt = {extras = ["crypto"], version = "^2.10.1"}
+async-fastapi-jwt-auth = "^0.6.6"
+uuid = "^1.30"
+psycopg2-binary = "^2.9.10"
+python-multipart = "^0.0.20"
+aioboto3 = "^15.0.0"
+openpyxl = "^3.1.5"
+jinja2 = "^3.1.6"
+weasyprint = "^66.0"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+black = "^24.8.0"
+pylint = "^3.3.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

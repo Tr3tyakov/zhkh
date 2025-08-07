@@ -1,0 +1,19 @@
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 98vh;
+    background-color: white;
+    width: 275px;
+    z-index: 2;
+    transition: var(--transition);
+    position: absolute;
+    left: 10px;
+    border-radius: var(--border-radius);
+    top: 10px;
+
+    &--disabled {
+        left: -480px;
+        transition: var(--transition);
+    }
+}

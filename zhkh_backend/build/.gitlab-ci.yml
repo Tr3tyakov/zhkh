@@ -1,0 +1,139 @@
+stages:
+  - lint
+  - tests
+  - prebuild
+  - build
+  - deploy
+
+lint:
+  stage: lint
+  image: 
+    name: ...
+  before_script:
+    - poetry config http-basic... __token__ $TOKEN
+    - poetry config virtualenvs.in-project true
+    - poetry lock
+    - poetry install --no-root
+  script:
+    - poetry run black --check .
+    - poetry run isort --check-only .
+  #    - poetry run pylint $(git ls-files '*.py') # Требуется исправить все ошибки
+  allow_failure: false
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  artifacts:
+    when: always
+    paths:
+      - pylint-report.txt
+    reports:
+      junit: pylint-report.xml
+
+pytest:
+  stage: tests
+  image: 
+    name: ...
+  before_script:
+    - poetry config http-basic.pzzl-sdk __token__ $TOKEN
+    - rm poetry.lock || true
+    - poetry config virtualenvs.in-project true
+    - poetry install --no-root
+  script:
+    - poetry env info
+    - poetry run coverage run --concurrency=thread --source=. -m pytest -n auto tests --tb=line --maxfail=1 --disable-warnings --junitxml=report.xml
+    - poetry run coverage xml -i
+    - poetry run coverage report
+    - poetry run genbadge tests -i - < report.xml -o - > badge.svg
+  allow_failure: false
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  artifacts:
+    when: always
+    paths:
+      - badge.svg
+      - coverage.xml
+      - report.xml
+    reports:
+      junit: report.xml
+
+prebuild:
+    stage: prebuild
+    image: ...
+    services:
+    - name: Dockerfile:27.3.1-dind
+      command: ["--tls=false"]
+    script:
+        - Dockerfile build -t ... -f build/Dockerfile-prebuild .
+        - Dockerfile push ...
+    rules:
+      - if: $CI_COMMIT_BRANCH == "dev"
+        changes:
+          - pyproject.toml
+        exists:
+          - build/Dockerfile-prebuild
+
+.build:
+  stage: build
+  image: cr.yandex/yc/metadata-token-Dockerfile-helper:0.2
+  services:
+    - name: Dockerfile:27.3.1-dind
+      command: ["--tls=false"]
+  script:
+    - Dockerfile build -t ... -f build/Dockerfile .
+    - Dockerfile push ...
+
+build:
+  extends: .build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "test" || $CI_COMMIT_BRANCH == "master"
+      when: always
+    - when: never
+      exists:
+        - build/Dockerfile
+
+.deploy:
+  stage: deploy
+  image: ...
+  needs:
+    - build
+  script:
+    - kubectl config set-cluster k8s-dev --server=$KUBE_URL_TEST --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --token="$KUBE_TOKEN_TEST"
+    - kubectl config set-context default --cluster=k8s-dev --users=admin
+    - kubectl config use-context default
+    - sed -i "s/__VERSION__/$CI_COMMIT_SHORT_SHA/" build/mvpback.yaml
+    - export
+    - kubectl apply -f build/mvpback.yaml -n $namespace
+
+deploy:prod:
+  extends: .deploy
+  variables:
+    namespace: prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - when: never
+
+deploy:dev:
+  extends: .deploy
+  variables:
+    namespace: dev 
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: on_success
+    - when: never
+
+deploy:teststage:
+  extends: .deploy
+  variables:
+    namespace: test
+    namespace2: stage
+  script:
+    - !reference [.deploy, script]
+    - kubectl apply -f build/mvpback.yaml -n $namespace2
+  rules:
+    - if: $CI_COMMIT_BRANCH == "test"
+      when: on_success
+    - when: never

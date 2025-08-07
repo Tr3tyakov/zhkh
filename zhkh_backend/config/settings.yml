@@ -1,0 +1,75 @@
+default:
+  NAME: ZHKH_SERVICE
+  PORT: 8000
+  HOST: 0.0.0.0
+  CORS_ORIGINS: [ "*" ]
+  DEBUG: false
+  RELOADED: false
+
+  TOKENS:
+    jwt_secret_key: 48c6a969e0e5fbece82114016368ad4d
+    secret_key: p1tl5yyGQctAlV-O5zQPZBOfeS22W_Hh6lwllxmiIYBqiww8hSyLsNMKVFDLfe6P_8OvHnou8BONDx8e7WO91g
+    algorithm: HS256
+    expires_minutes: 15
+    access_key: access_token
+    refresh_key: refresh_token
+    access_token_max_age: 86400
+    refresh_token_max_age: 2592000
+    access_expires_days: 1
+
+  POSTGRES:
+    host: database
+    port: 5432
+    user: postgres
+    password: postgres
+    database: postgres
+
+    echo: true
+    echo_pool: true
+    pool_pre_ping: true
+    pool_recycle: 3000
+    driver: psycopg2
+    async_driver: asyncpg
+
+  REDIS:
+    default_database: 0
+    host: redis
+    port: 6379
+    time_live: 3600
+
+  S3:
+    port: 9000
+    host: minio
+    protocol: http
+    verify: true
+    access_key: admin
+    secret_key: admin123
+    bucket: develbucket
+    region_name: us-east-1
+    version: s3v4
+    expiration_time_link_object: 1800
+
+  LOGGING:
+    version: 1
+    disable_existing_loggers: false
+    formatters:
+      default:
+        format: '[%(asctime)s] %(levelname)-8s# %(filename)s[LINE:%(lineno)d] %(message)s'
+    handlers:
+      console:
+        level: INFO
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stdout
+      error:
+        level: ERROR
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stderr
+    loggers:
+      default:
+        level: DEBUG
+        handlers: [ console, error ]
+    root:
+      level: DEBUG
+      handlers: [ console, error ]
