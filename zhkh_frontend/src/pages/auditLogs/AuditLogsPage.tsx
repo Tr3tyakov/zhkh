@@ -25,6 +25,7 @@ import { translateEnum } from '../../app/infrastructures/enums/translate.ts';
 import { LogTooltip } from '../../widgets/admin/auditLogs/logTooltip/LogTooltip.tsx';
 import InfoOutlineRoundedIcon from '@mui/icons-material/InfoOutlineRounded';
 import { useCopy } from '../../app/domain/hooks/useCopy/useCopy.ts';
+import { handleError } from '../../shared/common/handlerError.ts';
 
 export const AuditLogsPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,10 +40,7 @@ export const AuditLogsPage = () => {
             const data = await auditLogAPI.getLogs({ ...filters, limit: 10, offset });
             usePageData.changeData(data.logs, data.total);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }
@@ -50,7 +48,7 @@ export const AuditLogsPage = () => {
 
     const usePageData = usePage<IAuditLogItem, IAuditLogFilters>(
         fetchLogs,
-        auditLogsInitialFilters
+        auditLogsInitialFilters,
     );
     const auditLogAPI = useInjection<IAuditLogAPI>(AuditLogAPIKey);
 
@@ -71,7 +69,7 @@ export const AuditLogsPage = () => {
                     const logTypeTranslated = translateEnum(log.logType, auditLogTranslations);
                     const entityTypeTranslated = translateEnum(
                         log.entityType,
-                        entityTypeTranslations
+                        entityTypeTranslations,
                     );
 
                     return (
@@ -88,7 +86,7 @@ export const AuditLogsPage = () => {
                             <BodyTableCell>
                                 <LogTooltip log={log}>
                                     <ButtonBase
-                                        onClick={() => copy(log.logMetadata)}
+                                        onClick={() => log.logMetadata && log.logMetadata.length > 0 && copy(log.logMetadata)}
                                         sx={{ borderRadius: 50 }}
                                     >
                                         <InfoOutlineRoundedIcon />

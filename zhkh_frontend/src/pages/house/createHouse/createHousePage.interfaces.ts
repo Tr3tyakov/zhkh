@@ -5,6 +5,7 @@ interface IHouseForm {
     isLoading: boolean;
     onSubmit: (data: ICreateHouseData) => Promise<void>;
     title: string;
+    id?: number;
 }
 
 export type { IHouseForm };

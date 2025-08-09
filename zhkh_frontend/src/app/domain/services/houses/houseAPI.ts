@@ -10,6 +10,7 @@ import { CookieServiceKey } from '../../cookie/key.ts';
 import type { ICookieService } from '../../cookie/cookieService.interfaces.ts';
 import { IHouseFiltersState } from '../../../../widgets/house/houses/houseFilter/houseFilter.interfaces.ts';
 import qs from 'qs';
+
 @injectable()
 export class HouseAPI extends DefaultAPI implements IHouseAPI {
     constructor(@inject(CookieServiceKey) cookieService: ICookieService) {
@@ -63,7 +64,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
         limit: number,
         offset: number,
         filters: IHouseFiltersState,
-        query: IHouseQueryParams
+        query: IHouseQueryParams,
     ) {
         const params = {
             limit,
@@ -118,7 +119,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
             },
             {
                 headers: { Authorization: this.bearer },
-            }
+            },
         );
     }
 
@@ -136,7 +137,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
             },
             {
                 headers: { Authorization: this.bearer },
-            }
+            },
         );
     }
 
@@ -151,7 +152,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
         companyId: number,
         limit: number,
         offset: number,
-        searchValue?: string
+        searchValue?: string,
     ) {
         const params = {
             limit,
@@ -178,6 +179,14 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
 
     async getCities() {
         const response = await this.API.get(`/cities`, {
+            headers: { Authorization: this.bearer },
+        });
+
+        return response.data;
+    }
+
+    async getUnattachedHouses() {
+        const response = await this.API.get(`/houses-unattached`, {
             headers: { Authorization: this.bearer },
         });
 

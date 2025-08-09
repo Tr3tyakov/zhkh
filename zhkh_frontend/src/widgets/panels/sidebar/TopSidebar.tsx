@@ -1,8 +1,6 @@
 import {
-    Avatar,
     Box,
     Container,
-    ListItemButton,
     ListItemText,
     Menu,
     MenuItem,
@@ -16,6 +14,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { AdminNavigation, DefaultUserNavigation } from './topSidebar.constants.tsx';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import './topSidebar.scss';
+import { UserMenu } from './userMenu/UserMenu.tsx';
+import Icon from '../../../app/assets/icons/icon.png';
+import { motion } from 'framer-motion';
+import { defaultMotionConfig } from '../../../app/domain/motion/motionBox.ts';
+
+
+const MotionStyleListItemButton = motion.create(StyleListItemButton);
 
 const TopSidebar: React.FC = () => {
     const { user } = useUser();
@@ -46,29 +51,19 @@ const TopSidebar: React.FC = () => {
                 width="100%"
                 display="flex"
                 alignItems="center"
-                justifyContent="flex-end"
+                justifyContent="space-between"
                 bgcolor="primary.main"
             >
-                <Box>
-                    <ListItemButton
-                        disableRipple
-                        onClick={() => navigate(`/users/edit-user/${user!.id}`)}
-                    >
-                        <Box display="flex" alignItems="center" gap="10px">
-                            <Avatar src={user?.filePath} />
-                            <Box display="flex" justifyContent="center" flexDirection="column">
-                                <Typography
-                                    fontSize="14px"
-                                    color="primary.contrastText"
-                                    fontWeight={600}
-                                >
-                                    {user?.firstName} {user?.middleName}
-                                </Typography>
-                            </Box>
+                <Container maxWidth="lg">
+                    <Box display="flex" alignItems="center" justifyContent="space-between">
+                        <Box p="10px" display="flex" justifyContent="center">
+                            <Box width="35px" component="img" src={Icon} />
                         </Box>
-                    </ListItemButton>
-                </Box>
+                        <UserMenu user={user} />
+                    </Box>
+                </Container>
             </Box>
+
 
             {/* Меню */}
             <Box
@@ -142,20 +137,21 @@ const TopSidebar: React.FC = () => {
 
                         {navigationItems
                             .filter((item) => item.text !== 'Жилой фонд')
-                            .map((item) => (
-                                <StyleListItemButton
+                            .map((item, index) => (
+                                <MotionStyleListItemButton
+                                    {...defaultMotionConfig}
+                                    transition={{ duration: 0.3, delay: index * 0.05 }}
                                     key={item.text}
                                     disabled={item.disabled}
                                     onClick={() => navigate(item.path)}
                                     selected={location.pathname === item.path}
-                                    sx={{ px: 2 }}
-                                >
+                                    sx={{ px: 2 }}>
                                     <ListItemText>
                                         <Typography color="black" fontSize="14px">
                                             {item.text}
                                         </Typography>
                                     </ListItemText>
-                                </StyleListItemButton>
+                                </MotionStyleListItemButton>
                             ))}
                     </Box>
                 </Container>

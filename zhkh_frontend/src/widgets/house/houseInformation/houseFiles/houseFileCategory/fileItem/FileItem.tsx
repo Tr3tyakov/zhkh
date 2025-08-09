@@ -10,6 +10,7 @@ import { IFileItem } from './fileItem.interfaces.ts';
 import { getErrorMessage } from '../../../../../../shared/api/base.ts';
 import { LoadingProgress } from '../../../../../../shared/loading/loadingProgress/LoadingProgress.tsx';
 import dayjs from 'dayjs';
+import { handleError } from '../../../../../../shared/common/handlerError.ts';
 
 export const FileItem: React.FC<IFileItem> = ({ file, onDeleted }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,10 +24,7 @@ export const FileItem: React.FC<IFileItem> = ({ file, onDeleted }) => {
             openSnackbar({ message: 'Файл успешно удалён', variant: 'default' });
             onDeleted();
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             {
                 setIsLoading(false);

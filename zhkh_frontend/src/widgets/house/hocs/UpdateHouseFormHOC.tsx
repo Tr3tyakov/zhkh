@@ -15,6 +15,7 @@ import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI
 import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
 import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
 import { getChangedFields } from '../../../shared/common/getChangedFields.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
     const WrappedComponent: React.FC = () => {
@@ -33,7 +34,7 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
                 const data = await houseAPI.getHouseInformation(Number(id));
                 setInitialValues(data);
             } catch (e) {
-                openSnackbar({ message: getErrorMessage(e), variant: 'default' });
+                    handleError(e, openSnackbar);
             } finally {
                 setIsLoading(false);
             }
@@ -92,6 +93,7 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
                     initialValues={initialValues}
                     onSubmit={onSubmit}
                     isLoading={isLoading}
+                    id={id}
                 />
             )
         );

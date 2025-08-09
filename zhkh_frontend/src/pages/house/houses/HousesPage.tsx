@@ -27,6 +27,7 @@ import { AuditLogEnum, EntityTypeEnum } from '../../../app/infrastructures/enums
 import { IHouseFiltersState } from '../../../widgets/house/houses/houseFilter/houseFilter.interfaces.ts';
 import houseFilterState from '../../../widgets/house/houses/houseFilter/houseFilter.constants.ts';
 import { HouseFilter } from '../../../widgets/house/houses/houseFilter/HouseFilter.tsx';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 export const HousesPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,10 +48,8 @@ export const HousesPage = () => {
             });
             usePageData.changeData(data.houses, data.total);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
+
         } finally {
             setIsLoading(false);
         }
@@ -129,7 +128,7 @@ export const HousesPage = () => {
                 получить подробные сведения об объекте: текущее состояние, историю изменений и
                 другую важную информацию."
             />
-            <HouseFilter {...usePageData}  fetchHouses={fetchHouses} isLoading={isLoading} />
+            <HouseFilter {...usePageData} fetchHouses={fetchHouses} isLoading={isLoading} />
             <PageTable
                 {...usePageData}
                 isLoading={isLoading}

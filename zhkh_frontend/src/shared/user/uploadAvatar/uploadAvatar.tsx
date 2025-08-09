@@ -7,6 +7,7 @@ import { useInjection } from '../../../app/domain/hooks/useInjection.ts';
 import { IUserAPI } from '../../../app/domain/services/users/userAPI.interfaces.ts';
 import { UserAPIKey } from '../../../app/domain/services/users/key.ts';
 import { IUploadAvatar } from './uploadAvatar.interfaces.ts';
+import { handleError } from '../../common/handlerError.ts';
 
 export const UploadAvatar = ({ user, setupUser }: IUploadAvatar) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -31,10 +32,7 @@ export const UploadAvatar = ({ user, setupUser }: IUploadAvatar) => {
             await userAPI.uploadAvatar(user!.id, file);
             reader.readAsDataURL(file);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }

@@ -17,6 +17,7 @@ import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
 import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
 import { AuditLogEnum, EntityTypeEnum } from '../../../app/infrastructures/enums/auditLog.ts';
 import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
+import Icon from '../../../app/assets/icons/icon.png';
 
 export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -75,12 +76,12 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
     });
     return (
         <form onSubmit={formik.handleSubmit}>
-            <Box mt="120px">
+            <Box>
+                <Box width="100%" display="flex" justifyContent="center">
+                    <Box component="img" src={Icon} />
+                </Box>
                 <Typography fontSize="24px" mb="10px" fontWeight={500}>
-                    С этого шага начинается ваше цифровое присутствие
-                </Typography>
-                <Typography color="#505050">
-                    Добро пожаловать в пространство, где идеи становятся результатами
+                    С этого шага начинается управление жилым фондом
                 </Typography>
                 <Box width="100%" mt="20px">
                     <Box display="flex" flexDirection="column" gap="10px" mb="40px">
@@ -105,12 +106,12 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
                     <Button disabled={isLoading} type="submit" fullWidth variant="contained">
                         <LoadingProgress isLoading={isLoading} value="Войти" />
                     </Button>
-                    {/*<Box display="flex" mt="10px" gap="6px">*/}
-                    {/*    <Typography>Нет аккаунта?</Typography>*/}
-                    {/*    <Typography onClick={changeIsSignIn} className="pointer" color="primary">*/}
-                    {/*        Зарегистрироваться*/}
-                    {/*    </Typography>*/}
-                    {/*</Box>*/}
+                    <Box display="flex" mt="10px" gap="6px">
+                        <Typography>Нет аккаунта?</Typography>
+                        <Typography onClick={changeIsSignIn} className="pointer" color="primary">
+                            Зарегистрироваться
+                        </Typography>
+                    </Box>
                 </Box>
             </Box>
         </form>

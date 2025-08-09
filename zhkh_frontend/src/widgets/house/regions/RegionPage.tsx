@@ -13,6 +13,7 @@ import { LoadingProgress } from '../../../shared/loading/loadingProgress/Loading
 import { RenderRegionList } from './renderRegionList/RenderRegionList.tsx';
 import { TabPanel } from './tabPanel/TabPanel.tsx';
 import { useNavigate } from 'react-router-dom';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 function a11yProps(index: number) {
     return {
@@ -36,10 +37,7 @@ export const RegionsPage = () => {
             const data = await houseAPI.getRegions();
             setRegions(data);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }

@@ -17,6 +17,7 @@ import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
 import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
 import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
 import { getChangedFields } from '../../../shared/common/getChangedFields.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 export const UpdateCompanyHOC = (FormComponent: React.FC<ICompanyForm<IUpdateCompanyData>>) => {
     const WrappedComponent: React.FC = () => {
@@ -38,10 +39,7 @@ export const UpdateCompanyHOC = (FormComponent: React.FC<ICompanyForm<IUpdateCom
                     const data = await companyAPI.getCompany(+id);
                     setInitialValues(data);
                 } catch (e) {
-                    openSnackbar({
-                        message: getErrorMessage(e),
-                        variant: 'default',
-                    });
+                    handleError(e, openSnackbar);
                 } finally {
                     setIsLoading(false);
                 }

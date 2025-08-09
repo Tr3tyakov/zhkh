@@ -1,5 +1,6 @@
 import axios, { AxiosError, isAxiosError } from 'axios';
 import { ErrorResponse } from './api.interfaces.ts';
+import Cookies from 'js-cookie';
 
 const BASE_URL = 'localhost:8000';
 const API = axios.create({
@@ -10,10 +11,15 @@ API.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401 && window.location.pathname != '/auth') {
+            Cookies.remove('access_token');
+            window.location.href = '/auth';
+        }
+        if (error.response?.status === 400 && error.response.data.detail.error === 'Отсутствует доступ к ресурсу' && window.location.pathname != '/auth') {
+            Cookies.remove('access_token');
             window.location.href = '/auth';
         }
         return Promise.reject(error);
-    }
+    },
 );
 
 const getErrorMessage = (e: unknown): string => {

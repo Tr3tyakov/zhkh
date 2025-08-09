@@ -11,9 +11,10 @@ import {
 } from '@mui/material';
 import { ReferenceBookEditor } from '../../widgets/referenceBook/ReferenceBookEditor.tsx';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
+import { defaultMotionConfig, MotionBox } from '../../app/domain/motion/motionBox.ts';
 
 export const ReferenceBooksPage: React.FC = () => {
-    const [selectedBook, setSelectedBook] = useState<string>('');
+    const [selectedBook, setSelectedBook] = useState<string>('Тип дома');
     const { referenceBooks } = useReferenceBook();
     const theme = useTheme();
 
@@ -48,25 +49,32 @@ export const ReferenceBooksPage: React.FC = () => {
                     }}
                 >
                     {referenceBooks &&
-                        Object.keys(referenceBooks).map((book) => (
-                            <ListItemButton
-                                className="pointer"
+                        Object.keys(referenceBooks).map((book, index) => (
+                            <MotionBox
                                 key={book}
-                                selected={selectedBook === book}
-                                onClick={() => setSelectedBook(book)}
-                                sx={{
-                                    px: 3,
-                                    '&.Mui-selected': {
-                                        bgcolor: 'primary.main',
-                                        color: 'primary.contrastText',
-                                        '&:hover': {
-                                            bgcolor: 'primary.dark',
-                                        },
-                                    },
-                                }}
+                                layout
+                                {...defaultMotionConfig}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
                             >
-                                <ListItemText primary={book} />
-                            </ListItemButton>
+                                <ListItemButton
+                                    className="pointer"
+                                    key={book}
+                                    selected={selectedBook === book}
+                                    onClick={() => setSelectedBook(book)}
+                                    sx={{
+                                        px: 3,
+                                        '&.Mui-selected': {
+                                            bgcolor: 'primary.main',
+                                            color: 'primary.contrastText',
+                                            '&:hover': {
+                                                bgcolor: 'primary.dark',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <ListItemText primary={book} />
+                                </ListItemButton>
+                            </MotionBox>
                         ))}
                 </List>
             </Paper>

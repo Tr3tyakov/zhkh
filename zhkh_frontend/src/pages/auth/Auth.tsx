@@ -27,19 +27,19 @@ export const Auth = () => {
     };
 
     return (
-        <Box display="flex" gap="20px" p="20px">
+        <Box display="flex" gap="20px" p="20px" height="100%">
             <Box
                 width="50%"
                 height="100%"
-                padding="120px 40px 0 40px"
+                padding="0 40px 0 40px"
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
-                {/*<Collapse in={!isSignIn} orientation="vertical" unmountOnExit>*/}
-                {/*    <SignUp changeIsSignIn={changeIsSignIn} />*/}
-                {/*</Collapse>*/}
+                <Collapse in={!isSignIn} orientation="vertical" unmountOnExit>
+                    <SignUp changeIsSignIn={changeIsSignIn} />
+                </Collapse>
                 <Collapse in={isSignIn} orientation="vertical" unmountOnExit>
                     <SignIn changeIsSignIn={changeIsSignIn} />
                 </Collapse>

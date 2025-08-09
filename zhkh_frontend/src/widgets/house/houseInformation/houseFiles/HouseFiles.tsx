@@ -13,6 +13,7 @@ import { fileCategoryTranslations } from '../../../../app/infrastructures/enums/
 import { camelToEnum } from '../../../../shared/common/toCamel.ts';
 import { FileCategoryEnum } from '../../../../app/infrastructures/enums/house.ts';
 import { defaultMotionConfig, MotionBox } from '../../../../app/domain/motion/motionBox.ts';
+import { handleError } from '../../../../shared/common/handlerError.ts';
 
 export const HouseFiles = ({ houseId }: { houseId: number }) => {
     const userAPI = useInjection<IUserAPI>(UserAPIKey);
@@ -25,11 +26,7 @@ export const HouseFiles = ({ houseId }: { houseId: number }) => {
             const response = await userAPI.getHouseFiles(houseId);
             setFiles(response);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
-        } finally {
+            handleError(e, openSnackbar);
         }
     };
 

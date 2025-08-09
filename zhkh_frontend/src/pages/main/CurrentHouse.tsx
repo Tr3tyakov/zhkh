@@ -1,7 +1,7 @@
-import { Box, Breadcrumbs, Container } from '@mui/material';
+import { Box, Breadcrumbs, Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { getErrorMessage } from '../../shared/api/base.ts';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IHouseAPI, IHouseResponse } from '../../app/domain/services/houses/houseAPI.interfaces.ts';
 import { useInjection } from '../../app/domain/hooks/useInjection.ts';
 import { HouseAPIKey } from '../../app/domain/services/houses/key.ts';
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { HouseInformation } from '../../widgets/house/houseInformation/HouseInformation.tsx';
 import { formatHouseAddress } from '../../widgets/house/houseInformation/houseInformation.functions.ts';
 import { LoadingProgress } from '../../shared/loading/loadingProgress/LoadingProgress.tsx';
+import { handleError } from '../../shared/common/handlerError.ts';
 
 export const CurrentHouse = () => {
     const houseAPI = useInjection<IHouseAPI>(HouseAPIKey);
@@ -28,10 +29,7 @@ export const CurrentHouse = () => {
             const data = await houseAPI.getHouseInformation(+houseId);
             setData(data);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }
@@ -44,14 +42,21 @@ export const CurrentHouse = () => {
     return (
         <Container maxWidth="lg">
             <Box display="flex" flexDirection="column" gap="10px" p="20px">
-                <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-                    <Typography className="pointer" onClick={() => navigate('/houses')}>
-                        Жилой фонд
-                    </Typography>
-                    <Typography className="pointer" color="text.primary" noWrap>
-                        {formatHouseAddress(data)}
-                    </Typography>
-                </Breadcrumbs>
+                <Box display="flex" justifyContent="space-between">
+                    <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+                        <Typography className="pointer" onClick={() => navigate('/houses')}>
+                            Жилой фонд
+                        </Typography>
+                        <Typography className="pointer" color="text.primary" noWrap>
+                            {formatHouseAddress(data)}
+                        </Typography>
+                    </Breadcrumbs>
+                    <Box>
+                        <Button onClick={() => navigate(`/houses/edit-house/${data?.id}`)} variant="contained" size="small">
+                            Редактировать жилой фонд
+                        </Button>
+                    </Box>
+                </Box>
                 <Typography fontSize="18px" fontWeight="500">
                     Анкета дома по адресу {formatHouseAddress(data)}
                 </Typography>

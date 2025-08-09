@@ -26,6 +26,7 @@ import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI
 import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
 import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
 import { ICompaniesFilter } from './companies.interfaces.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 const filter: ICompaniesFilter = {
     searchValue: '',
@@ -46,10 +47,8 @@ export const CompaniesPage = () => {
             const data = await companyAPI.getCompanies(10, offset, filter.searchValue);
             usePageData.changeData(data.companies, data.total);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
+
         } finally {
             setIsLoading(false);
         }

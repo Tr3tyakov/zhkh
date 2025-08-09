@@ -29,6 +29,9 @@ import { AuditLogEnum, EntityTypeEnum } from '../../app/infrastructures/enums/au
 import { useUser } from '../../app/domain/hooks/useUser/useUser.ts';
 import { DefaultSearchFilter } from '../../app/domain/hooks/usePage/usePage.interfaces.ts';
 import { UserFilter } from '../../widgets/users/filters/UserFilter.tsx';
+import { handleError } from '../../shared/common/handlerError.ts';
+import { translateEnum } from '../../app/infrastructures/enums/translate.ts';
+import { accountStatusTranslations, userTypeTranslations } from '../../app/infrastructures/enums/translation/user.ts';
 
 const DefaultFilterState = {
     searchValue: '',
@@ -51,10 +54,7 @@ export const UsersPage = () => {
             const data = await userAPI.getUsers(10, offset, filters);
             usePageData.changeData(data.users, data.total);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+                    handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }
@@ -273,8 +273,8 @@ export const UsersPage = () => {
                         <BodyTableCell>{user.id}</BodyTableCell>
                         <BodyTableCell>{user.firstName}</BodyTableCell>
                         <BodyTableCell>{user.email}</BodyTableCell>
-                        <BodyTableCell>{user.accountStatus}</BodyTableCell>
-                        <BodyTableCell>{user.userType}</BodyTableCell>
+                        <BodyTableCell>{translateEnum(user.accountStatus, accountStatusTranslations)}</BodyTableCell>
+                        <BodyTableCell>{translateEnum(user.userType, userTypeTranslations)}</BodyTableCell>
                     </React.Fragment>
                 )}
             />

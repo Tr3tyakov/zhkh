@@ -8,6 +8,7 @@ import { PageHeader } from '../../page/pageHeader/pageHeader';
 import { HouseAPIKey } from '../../../app/domain/services/houses/key.ts';
 import { LoadingProgress } from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
 import { useNavigate } from 'react-router-dom';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 const Grid = MuiGrid as React.FC<GridProps>;
 
@@ -24,10 +25,8 @@ export const CitiesPage = () => {
             const data = await houseAPI.getCities();
             setCities(data);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+                    handleError(e, openSnackbar);
+
         } finally {
             setIsLoading(false);
         }

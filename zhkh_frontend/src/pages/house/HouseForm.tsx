@@ -9,14 +9,16 @@ import { IHouseForm } from './createHouse/createHousePage.interfaces';
 import { address, floors, squares } from './createHouse/createHousePage.constants';
 import { CustomSelect } from '../../app/domain/components/CustomSelect';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
+import { useNavigate } from 'react-router-dom';
 
-export const HouseForm: React.FC<IHouseForm> = ({ initialValues, isLoading, onSubmit, title }) => {
+export const HouseForm: React.FC<IHouseForm> = ({ id, initialValues, isLoading, onSubmit, title }) => {
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit,
         enableReinitialize: true,
     });
+    const navigate = useNavigate();
     const { referenceBooks } = useReferenceBook();
 
     const handleCheckbox = (name: string) => (
@@ -39,7 +41,7 @@ export const HouseForm: React.FC<IHouseForm> = ({ initialValues, isLoading, onSu
         />
     );
 
-    const renderFields = (fields: { name: string; label: string; type?: string }[], width = 400) =>
+    const renderFields = (fields: { name: string; label: string; type?: string, mask?: string }[], width = 400) =>
         fields.map(({ name, label, type }) => (
             <FieldGroup
                 key={name}
@@ -52,7 +54,7 @@ export const HouseForm: React.FC<IHouseForm> = ({ initialValues, isLoading, onSu
         ));
 
     const renderReferenceFields = (
-        fields: { name: string; label: string; referenceKey?: string }[]
+        fields: { name: string; label: string; referenceKey?: string }[],
     ) => {
         return fields.map(({ name, label, referenceKey }) => {
             const options = referenceKey ? referenceBooks?.[referenceKey] || [] : null;
@@ -73,7 +75,6 @@ export const HouseForm: React.FC<IHouseForm> = ({ initialValues, isLoading, onSu
                     </Typography>
 
                     <Section title="Адрес">{renderFields(address)}</Section>
-
                     <Section title="Основные сведения">
                         {renderFields([
                             {
@@ -383,6 +384,7 @@ export const HouseForm: React.FC<IHouseForm> = ({ initialValues, isLoading, onSu
                     </Box>
                 </Box>
             </Container>
+
         </form>
     );
 };

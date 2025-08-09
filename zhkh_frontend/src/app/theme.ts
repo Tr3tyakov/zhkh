@@ -12,14 +12,13 @@ declare module '@mui/material/styles' {
         subtitle?: PaletteOptions['primary'];
     }
 }
-// @ts-ignore
 const theme = createTheme({
     typography: {
         button: {
             textTransform: 'none',
         },
         fontSize: 14,
-        fontFamily: `'Halvar Breitschrift', sans-serif`,
+        fontFamily: `'Roboto', sans-serif`,
     },
     cssVariables: true,
     palette: {
@@ -32,7 +31,7 @@ const theme = createTheme({
             contrastText: '#fff',
         },
         primary: {
-            main: '#556cd6',
+            main: '#2671b8',
         },
         secondary: {
             main: '#19857b',

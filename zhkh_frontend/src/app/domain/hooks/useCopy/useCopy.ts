@@ -1,5 +1,5 @@
 import { useEnqueueSnackbar } from '../useSnackbar/useEnqueueSnackbar.ts';
-import { getErrorMessage } from '../../../../shared/api/base.ts';
+import { handleError } from '../../../../shared/common/handlerError.ts';
 
 export const useCopy = (message?: string) => {
     const { openSnackbar } = useEnqueueSnackbar();
@@ -12,10 +12,7 @@ export const useCopy = (message?: string) => {
                 variant: 'default',
             });
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         }
     };
 

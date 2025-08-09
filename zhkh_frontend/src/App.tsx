@@ -29,8 +29,10 @@ import { AuditLogsPage } from './pages/auditLogs/AuditLogsPage.tsx';
 import { RegionsPage } from './widgets/house/regions/RegionPage.tsx';
 import { CitiesPage } from './widgets/house/cities/CitiesPage.tsx';
 import { ReferenceBooksPage } from './pages/referenceBook/ReferenceBooksPage.tsx';
+import { handleError } from './shared/common/handlerError.ts';
 
 dayjs.locale('ru');
+
 
 const App = () => {
     const { user, setupUser } = useUser();
@@ -46,10 +48,7 @@ const App = () => {
                     const user = await userAPI.getUserInformation();
                     setupUser(user);
                 } catch (e) {
-                    openSnackbar({
-                        message: getErrorMessage(e),
-                        variant: 'default',
-                    });
+                    handleError(e, openSnackbar);
                 }
             }
         };

@@ -111,7 +111,7 @@ export const HouseFilter: React.FC<IHousesFilter> = ({
                         ),
                     }}
                 />
-                <Collapse in={isFilterOpen}>
+                <Collapse in={isFilterOpen} unmountOnExit>
                     <Stack direction="row" gap="10px">
                         <Stack flex={1} direction="column" gap="5px" flexWrap="wrap" mb="10px">
                             Год постройки

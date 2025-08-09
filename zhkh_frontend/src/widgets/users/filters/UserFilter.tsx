@@ -1,43 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
     Box,
-    TextField,
-    InputAdornment,
     Button,
-    Stack,
-    MenuItem,
     Checkbox,
-    ListItemText,
-    Select,
-    FormControl,
-    OutlinedInput,
-    InputLabel,
     Collapse,
+    FormControl,
+    InputAdornment,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    OutlinedInput,
+    Select,
     SelectChangeEvent,
-} from '@mui/material';
+    Stack,
+    TextField
+} from "@mui/material";
 import useDebounce from '../../../app/domain/hooks/useDebounce/useDebounce.ts';
 import { LoadingProgress } from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
 import { accountStatusOptions, typeOptions } from '../../../app/infrastructures/enums/translation/user.ts';
 
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: 48 * 4.5 + 8,
-            width: 250,
-        },
-    },
-};
 
-export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters, setFilters }) => {
-    const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-    const [textField, setTextField] = useState<string>('');
+interface FiltersProps<S> {
+    filters: Partial<S>;
+    setFilters: React.Dispatch<React.SetStateAction<Partial<S>>>;
+    isLoading: boolean;
+    setPage: (page: number) => void;
+}
+
+export function UserFilter<S extends Record<string, any>>({
+    filters,
+    setFilters,
+    isLoading,
+    setPage,
+}: FiltersProps<S>) {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [textField, setTextField] = useState("");
     const debouncedText = useDebounce(textField, 500);
 
     const handleReset = () => {
         setFilters({});
-        setTextField('');
+        setTextField("");
         setPage(1);
     };
+
     const handleMultiSelectChange =
         (filterField: keyof S) => (event: SelectChangeEvent<string[]>) => {
             const value = event.target.value as string[];
@@ -51,7 +56,7 @@ export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters,
     useEffect(() => {
         setFilters((prev) => ({
             ...prev,
-            searchValue: debouncedText || '',
+            searchValue: debouncedText || "",
         }));
         setPage(1);
     }, [debouncedText]);
@@ -79,6 +84,7 @@ export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters,
                     </Button>
                 </Stack>
             </Box>
+
             <Box display="flex" flexDirection="column" gap={2} mt={2} mb={2}>
                 <TextField
                     onChange={(e) => setTextField(e.target.value)}
@@ -94,7 +100,8 @@ export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters,
                         ),
                     }}
                 />
-                <Collapse in={isFilterOpen}>
+
+                <Collapse in={isFilterOpen} unmountOnExit>
                     <Stack direction="row" gap="10px">
                         <FormControl fullWidth>
                             <InputLabel id="user-type-label">Тип пользователя</InputLabel>
@@ -102,53 +109,43 @@ export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters,
                                 labelId="user-type-label"
                                 multiple
                                 value={filters.userType || []}
-                                onChange={handleMultiSelectChange('userType')}
+                                onChange={handleMultiSelectChange("userType")}
                                 input={<OutlinedInput label="Тип пользователя" />}
                                 renderValue={(selected) =>
                                     typeOptions
-                                        .filter((opt) => (selected as string[]).includes(opt.value))
-                                        .map((opt) => opt.label)
-                                        .join(', ')
+                                        .filter((opt) => (selected as string[]).includes(opt.id))
+                                        .map((opt) => opt.value)
+                                        .join(", ")
                                 }
-                                MenuProps={MenuProps}
                             >
                                 {typeOptions.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Checkbox
-                                            checked={
-                                                filters.userType?.includes(option.value) || false
-                                            }
-                                        />
-                                        <ListItemText primary={option.label} />
+                                    <MenuItem key={option.id} value={option.id}>
+                                        <Checkbox checked={filters.userType?.includes(option.id) || false} />
+                                        <ListItemText primary={option.value} />
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
+
                         <FormControl fullWidth>
                             <InputLabel id="account-status-label">Статус пользователя</InputLabel>
                             <Select
                                 labelId="account-status-label"
                                 multiple
                                 value={filters.accountStatus || []}
-                                onChange={handleMultiSelectChange('accountStatus')}
+                                onChange={handleMultiSelectChange("accountStatus")}
                                 input={<OutlinedInput label="Статус пользователя" />}
                                 renderValue={(selected) =>
                                     accountStatusOptions
-                                        .filter((opt) => (selected as string[]).includes(opt.value))
-                                        .map((opt) => opt.label)
-                                        .join(', ')
+                                        .filter((opt) => (selected as string[]).includes(opt.id))
+                                        .map((opt) => opt.value)
+                                        .join(", ")
                                 }
-                                MenuProps={MenuProps}
                             >
                                 {accountStatusOptions.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Checkbox
-                                            checked={
-                                                filters.accountStatus?.includes(option.value) ||
-                                                false
-                                            }
-                                        />
-                                        <ListItemText primary={option.label} />
+                                    <MenuItem key={option.id} value={option.id}>
+                                        <Checkbox checked={filters.accountStatus?.includes(option.id) || false} />
+                                        <ListItemText primary={option.value} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -158,4 +155,4 @@ export const UserFilter: React.FC<IUserFilter> = ({ isLoading, setPage, filters,
             </Box>
         </>
     );
-};
+}

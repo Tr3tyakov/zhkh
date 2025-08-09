@@ -9,6 +9,7 @@ import { getErrorMessage } from '../../../shared/api/base.ts';
 import { useInjection } from '../../../app/domain/hooks/useInjection.ts';
 import { IUserAPI } from '../../../app/domain/services/users/userAPI.interfaces.ts';
 import { UserAPIKey } from '../../../app/domain/services/users/key.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 export const SignUp: React.FC<ISignUp> = ({ changeIsSignIn }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,10 +52,8 @@ export const SignUp: React.FC<ISignUp> = ({ changeIsSignIn }) => {
                 formik.resetForm();
                 changeIsSignIn();
             } catch (e) {
-                openSnackbar({
-                    message: getErrorMessage(e),
-                    variant: 'default',
-                });
+                    handleError(e, openSnackbar);
+
             } finally {
                 setIsLoading(false);
             }

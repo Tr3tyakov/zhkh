@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useInjection } from '../../../../app/domain/hooks/useInjection.ts';
 import { useEnqueueSnackbar } from '../../../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
-import { getErrorMessage } from '../../../../shared/api/base.ts';
 import { CompanyContext } from './companyContext.ts';
 import {
     IHouseAPI,
@@ -13,6 +12,7 @@ import { ICompanyProvider } from './companyContext.interfaces.ts';
 import { ROWS_PER_PAGE } from '../../../../widgets/house/houses/houses.constants.ts';
 import { usePage } from '../../../../app/domain/hooks/usePage/usePage.ts';
 import { DefaultSearchFilter } from '../../../../app/domain/hooks/usePage/usePage.interfaces.ts';
+import { handleError } from '../../../../shared/common/handlerError.ts';
 
 const CompanyProvider: React.FC<ICompanyProvider> = ({ children }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -36,10 +36,7 @@ const CompanyProvider: React.FC<ICompanyProvider> = ({ children }) => {
             );
             usePageData.changeData(data.houses, data.total);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }

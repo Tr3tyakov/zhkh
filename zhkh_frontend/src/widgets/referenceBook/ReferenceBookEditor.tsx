@@ -18,11 +18,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useEnqueueSnackbar } from '../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
-import { getErrorMessage } from '../../shared/api/base.ts';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
 import { useInjection } from '../../app/domain/hooks/useInjection.ts';
 import { IReferenceBookAPI } from '../../app/domain/services/referenceBooks/referenceBookAPI.interfaces.ts';
 import { ReferenceBookAPIKey } from '../../app/domain/services/referenceBooks/key.ts';
+import { handleError } from '../../shared/common/handlerError.ts';
+import { motion } from 'framer-motion';
+import { defaultMotionConfig } from '../../app/domain/motion/motionBox.ts';
 
 interface ReferenceBookValue {
     id: number;
@@ -32,6 +34,8 @@ interface ReferenceBookValue {
 interface Props {
     referenceBookName: string;
 }
+
+const MotionListItem = motion.create(ListItem);
 
 export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
     const { referenceBooks, referenceBookIds, fetchReferenceBooks } = useReferenceBook();
@@ -71,10 +75,7 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
                 variant: 'default',
             });
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
             setDialogOpen(false);
@@ -91,10 +92,7 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
                 variant: 'default',
             });
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }
@@ -109,10 +107,8 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
                 variant: 'default',
             });
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
+
         } finally {
             setIsLoading(false);
             setDialogOpen(false);
@@ -143,8 +139,12 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
             <Box maxHeight="calc(100vh - 290px)" overflow="auto">
                 <List>
                     {referenceBooks &&
-                        referenceBooks[referenceBookName].map((value) => (
-                            <ListItem key={value.id} divider>
+                        referenceBooks[referenceBookName].map((value, index) => (
+                            <MotionListItem
+                                {...defaultMotionConfig}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                                key={value.id} divider
+                            >
                                 <ListItemText primary={value.value} />
                                 <Box display="flex" gap="10px">
                                     <IconButton
@@ -164,7 +164,7 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
                                         <DeleteIcon />
                                     </IconButton>
                                 </Box>
-                            </ListItem>
+                            </MotionListItem>
                         ))}
 
                     {referenceBooks && referenceBooks[referenceBookName].length === 0 && (

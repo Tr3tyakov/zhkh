@@ -11,6 +11,7 @@ import {
 import { ReferenceBookAPIKey } from '../../../domain/services/referenceBooks/key.ts';
 import { getErrorMessage } from '../../../../shared/api/base.ts';
 import { ReferenceBookContext } from './referenceBookContext.ts';
+import { handleError } from '../../../../shared/common/handlerError.ts';
 
 function buildReferenceBookMaps(books: IReferenceBookList[]) {
     const refMap: ReferenceBookMap = {};
@@ -43,10 +44,7 @@ export const ReferenceBookProvider: React.FC<{ children: React.ReactNode }> = ({
             setReferenceBookIds(nameToId);
             setReferenceBookIdToName(idToName);
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         }
     };
 

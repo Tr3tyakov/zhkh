@@ -7,12 +7,13 @@ import { UserAPIKey } from '../../../../../app/domain/services/users/key.ts';
 import { useEnqueueSnackbar } from '../../../../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
 import { IUploadFileButton } from './uploadFileButton.intefaces.ts';
 import { getErrorMessage } from '../../../../../shared/api/base.ts';
+import { handleError } from '../../../../../shared/common/handlerError.ts';
 
 export const UploadFileButton: React.FC<IUploadFileButton> = ({
-    category,
-    houseId,
-    onUploadSuccess,
-}) => {
+                                                                  category,
+                                                                  houseId,
+                                                                  onUploadSuccess,
+                                                              }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const userAPI = useInjection<IUserAPI>(UserAPIKey);
     const { openSnackbar } = useEnqueueSnackbar();
@@ -26,10 +27,7 @@ export const UploadFileButton: React.FC<IUploadFileButton> = ({
             openSnackbar({ message: 'Файл успешно загружен', variant: 'default' });
             onUploadSuccess();
         } catch (e) {
-            openSnackbar({
-                message: getErrorMessage(e),
-                variant: 'default',
-            });
+            handleError(e, openSnackbar);
         }
     };
 

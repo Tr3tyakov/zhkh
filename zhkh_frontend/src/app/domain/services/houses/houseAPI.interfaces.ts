@@ -204,6 +204,11 @@ interface IHouseAPI {
         offset: number,
         searchValue?: string
     ) => Promise<IGetHousesResponse>;
+    getUnattachedHouses: (
+        limit: number,
+        offset: number,
+        searchValue?: string
+    ) => Promise<IGetHousesResponse>;
 }
 
 export type {

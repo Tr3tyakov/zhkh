@@ -17,6 +17,7 @@ import { AuditLogEnum, EntityTypeEnum } from '../../../app/infrastructures/enums
 import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
 import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
 import { getChangedFields } from '../../../shared/common/getChangedFields.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
 
 export const UpdateUserHOC = (FormComponent: React.FC<IUserForm<IUpdateUserData>>) => {
     const WrappedComponent: React.FC = () => {
@@ -44,10 +45,7 @@ export const UpdateUserHOC = (FormComponent: React.FC<IUserForm<IUpdateUserData>
                     const user = await userAPI.getUserById(Number(id));
                     setInitialValues({ password: '', ...user });
                 } catch (e) {
-                    openSnackbar({
-                        message: getErrorMessage(e),
-                        variant: 'default',
-                    });
+                    handleError(e, openSnackbar);
                 } finally {
                     setIsLoading(false);
                 }
