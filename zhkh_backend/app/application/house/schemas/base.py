@@ -41,7 +41,7 @@ class HouseBaseSchema(BaseSchema):
     # --- Технические характеристики ---
     house_type: Optional[int] = None
     building_wear_percent: Optional[float] = None
-    building_wear_date: Optional[date] = None
+    building_wear_date: Optional[datetime] = None
 
     # --- Площади ---
     total_area: Optional[float] = None
@@ -143,6 +143,8 @@ class HouseBaseSchema(BaseSchema):
     # --- Примечание администратора ---
     note: Optional[str] = None
 
+    class Config:
+        json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y")}
 
 class HouseResponseSchema(HouseBaseSchema):
     id: int

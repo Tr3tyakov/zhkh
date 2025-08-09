@@ -29,7 +29,7 @@ async def seed_user(session: AsyncSession):
                 first_name="Иван",
                 middle_name="Иванов",
                 last_name="Иванович",
-                email="admin@service.local",
+                email="admin@service.ru",
                 password="admin123",
                 user_type=UserTypeEnum.ADMIN,
                 file_key=None,

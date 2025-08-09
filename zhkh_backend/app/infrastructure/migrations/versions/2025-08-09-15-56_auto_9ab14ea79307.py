@@ -1,8 +1,8 @@
 """ -auto
 
-Revision ID: 02b7bcbff825
+Revision ID: 9ab14ea79307
 Revises: 
-Create Date: 2025-08-06 20:49:54.497820+03:00
+Create Date: 2025-08-09 15:56:52.159806+03:00
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '02b7bcbff825'
+revision: str = '9ab14ea79307'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -119,7 +119,7 @@ def upgrade() -> None:
     sa.Column('has_accessibility', sa.Integer(), nullable=True, comment='Наличие приспособлений для маломобильных групп населения'),
     sa.Column('house_type', sa.Integer(), nullable=True, comment='Тип дома'),
     sa.Column('building_wear_percent', sa.Float(), nullable=True, comment='Износ здания, %'),
-    sa.Column('building_wear_date', sa.Date(), nullable=True, comment='Дата установления износа'),
+    sa.Column('building_wear_date', sa.DateTime(), nullable=True, comment='Дата установления износа'),
     sa.Column('total_area', sa.Float(), nullable=True, comment='Площадь многоквартирного дома, м²'),
     sa.Column('residential_area', sa.Float(), nullable=True, comment='Площадь жилых помещений, м²'),
     sa.Column('non_residential_area', sa.Float(), nullable=True, comment='Площадь нежилых помещений, м²'),

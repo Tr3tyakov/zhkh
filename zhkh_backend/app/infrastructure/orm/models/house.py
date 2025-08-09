@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from app.infrastructure.orm.models.base import BaseModel
 from sqlalchemy import (
     Boolean,
     Column,
@@ -11,8 +12,6 @@ from sqlalchemy import (
     String,
     Text,
 )
-
-from app.infrastructure.orm.models.base import BaseModel
 
 
 class House(BaseModel):
@@ -68,7 +67,7 @@ class House(BaseModel):
         Integer, ForeignKey("reference_book_value.id"), comment="Тип дома"
     )
     building_wear_percent = Column(Float, comment="Износ здания, %")
-    building_wear_date = Column(Date, comment="Дата установления износа")
+    building_wear_date = Column(DateTime, comment="Дата установления износа")
 
     # --- Площади ---
     total_area = Column(Float, comment="Площадь многоквартирного дома, м²")

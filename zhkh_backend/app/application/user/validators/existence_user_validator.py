@@ -8,9 +8,9 @@ from app.application.auth.commands.registration_command import RegistrationComma
 from app.application.common.behaviors.validation_behavior import ValidationBehaviorError
 from app.application.common.interfaces.behavior import IValidator
 from app.application.company.commands.create_company_command import CreateCompanyCommand
-from app.application.house.commands.create_house_file_command import (
-    CreateHouseFileCommand,
-)
+from app.application.company.queries.get_companies_query import GetCompaniesQuery
+from app.application.house.queries.get_houses_query import GetHousesQuery
+from app.application.reference_book.queries.get_reference_books_query import GetReferenceBooksQuery
 from app.application.user.commands.change_account_status_command import (
     ChangeAccountStatusCommand,
 )
@@ -24,8 +24,10 @@ from app.application.user.commands.update_user_information_command import (
 )
 from app.application.user.queries.get_current_user_query import GetCurrentUserQuery
 from app.application.user.queries.get_user_query import GetUserQuery
+from app.application.user.queries.get_users_query import GetUsersQuery
 from app.domain.common.interfaces.repositories.user_repository import IUserRepository
 from app.domain.user.value_objects.filters.user_filter import UserFilter
+from app.infrastructure.common.enums.user import UserAccountStatusEnum
 from app.infrastructure.common.exception.exception_detail import ExceptionDetail
 from app.infrastructure.common.exception.validation_detail import ValidationReasonType
 from app.infrastructure.containers.utils import Provide
@@ -36,8 +38,8 @@ class ExistentUserByEmailValidator(IValidator):
     SUPPORTED = (AuthorizationCommand,)
 
     def __init__(
-        self,
-        user_repository: IUserRepository = Provide[IUserRepository],
+            self,
+            user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -64,8 +66,8 @@ class NonExistentUserByEmailValidator(IValidator):
     SUPPORTED = (RegistrationCommand,)
 
     def __init__(
-        self,
-        user_repository: IUserRepository = Provide[IUserRepository],
+            self,
+            user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -99,8 +101,8 @@ class ExistentUserByIdValidator(IValidator):
     )
 
     def __init__(
-        self,
-        user_repository: IUserRepository = Provide[IUserRepository],
+            self,
+            user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -116,6 +118,40 @@ class ExistentUserByIdValidator(IValidator):
                     field="user_id",
                     value=data.user_id,
                     error=ValidationReasonType.ENTITY_NOT_FOUND,
+                ),
+            )
+
+        context.user = user
+
+
+class ExistentUserNotBannedByIdValidator(IValidator):
+    SUPPORTED = (
+        GetUserQuery,
+        GetReferenceBooksQuery,
+        GetUsersQuery,
+        GetCompaniesQuery,
+        GetHousesQuery
+    )
+
+    def __init__(
+            self,
+            user_repository: IUserRepository = Provide[IUserRepository],
+    ):
+        self._user_repository = user_repository
+
+    async def validate(self, data: Any, context: PipelineContext) -> None:
+        user = context.user
+        if not user:
+            user = await self._user_repository.get_user(
+                filters=UserFilter(id=(eq, data.user_id))
+            )
+
+        if user.account_status == UserAccountStatusEnum.BLOCKED:
+            raise ValidationBehaviorError(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ExceptionDetail(
+                    value="Аккаунт заблокирован, обратиться к администратору",
+                    error=ValidationReasonType.ACCESS_UNAVAILABLE,
                 ),
             )
 

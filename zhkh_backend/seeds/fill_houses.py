@@ -59,6 +59,11 @@ def parse_date_ddmmyyyy(value):
 
 async def seed_house(session: AsyncSession):
     async with session.begin():
+        existing_house = await session.execute(select(House.id).limit(1))
+        if existing_house.scalars().first() is not None:
+            print("Дома уже есть в базе, сид пропущен")
+            return
+
         user_id = (
             (
                 await session.execute(

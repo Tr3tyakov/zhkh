@@ -7,7 +7,6 @@ from app.domain.common.interfaces.repositories.queries.house_query_repository im
 )
 from app.domain.common.schemas.house_response_schema import GetHouseResponseSchema
 from app.infrastructure.containers.utils import Provide
-from app.infrastructure.mediator.pipline_context import PipelineContext
 
 
 class GetAttachedHousesToCompanyHandler(IRequestHandler[GetAttachedHousesQuery, None]):
@@ -18,6 +17,6 @@ class GetAttachedHousesToCompanyHandler(IRequestHandler[GetAttachedHousesQuery, 
         self._house_query_repository = house_query_repository
 
     async def handle(
-        self, query: GetAttachedHousesQuery, context: PipelineContext
+            self, query: GetAttachedHousesQuery, _
     ) -> GetHouseResponseSchema:
-        return await self._house_query_repository.get_houses(**query.model_dump())
+        return await self._house_query_repository.get_attached_houses(query)

@@ -8,11 +8,13 @@ from sqlalchemy import (
     case,
     distinct,
     func,
-    select,
+    select, or_,
 )
 
 from app.application.common.interfaces.ceph import ICeph
+from app.application.house.queries.get_attached_houses_query import GetAttachedHousesQuery
 from app.application.house.queries.get_houses_query import GetHousesQuery
+from app.application.house.queries.get_unattached_houses_query import GetUnAttachedHousesQuery
 from app.application.house.schemas.base import HouseResponseSchema
 from app.application.house.schemas.get_house_files_schema import (
     GetHouseFilesResponseSchema,
@@ -28,7 +30,6 @@ from app.infrastructure.common.enums.base import ResultStrategy
 from app.infrastructure.common.enums.user import FileCategoryEnum
 from app.infrastructure.containers.utils import Provide
 from app.infrastructure.orm.models import (
-    Company,
     House,
 )
 from app.infrastructure.orm.models.file import File
@@ -43,9 +44,40 @@ class HouseQueryRepository(BaseRepository, IHouseQueryRepository):
         self._ceph = ceph
         super().__init__()
 
+    async def get_unattached_houses(self, query: GetUnAttachedHousesQuery) -> GetHouseResponseSchema:
+        stmt = select(House).where(
+            House.company_id == None
+        )
+
+        stmt = self._get_search_stmt(stmt, query.search)
+        stmt = stmt.order_by(House.id)
+        houses, count = await self.get_pagination_data(
+            stmt, query.limit, query.offset
+        )
+        return GetHouseResponseSchema(
+            total=count,
+            houses=[HouseResponseSchema.model_validate(house) for house in houses],
+        )
+
+    async def get_attached_houses(self, query: GetAttachedHousesQuery) -> GetHouseResponseSchema:
+        stmt = select(House).where(
+            House.company_id == query.company_id
+        )
+
+        stmt = self._get_search_stmt(stmt, query.search)
+        stmt = stmt.order_by(House.id)
+        houses, count = await self.get_pagination_data(
+            stmt, query.limit, query.offset
+        )
+
+        return GetHouseResponseSchema(
+            total=count,
+            houses=[HouseResponseSchema.model_validate(house) for house in houses],
+        )
+
     async def get_houses(
-        self,
-        filters: GetHousesQuery,
+            self,
+            filters: GetHousesQuery,
     ) -> GetHouseResponseSchema:
         stmt = select(House)
 
@@ -131,6 +163,7 @@ class HouseQueryRepository(BaseRepository, IHouseQueryRepository):
         if filters.is_emergency is not None:
             stmt = stmt.where(House.is_emergency == filters.is_emergency)
 
+        stmt = stmt.order_by(House.id)
         houses, count = await self.get_pagination_data(
             stmt, filters.limit, filters.offset
         )
@@ -209,3 +242,66 @@ class HouseQueryRepository(BaseRepository, IHouseQueryRepository):
         if values is not None and len(values) > 0:
             return stmt.where(getattr(House, field).in_(values))
         return stmt
+
+    def _get_search_stmt(self, stmt, search: Optional[str] = None):
+        if search:
+            address_like = f"%{search.lower().strip()}%"
+            full_address = func.lower(
+                func.concat_ws(
+                    " ",
+                    House.region,
+                    House.city,
+                    House.street,
+                    func.concat("д. ", House.house_number),
+                )
+            )
+            return stmt.where(full_address.ilike(address_like))
+        return stmt
+
+    async def is_reference_value_used(self, reference_value_id: int) -> bool:
+        filters = or_(
+            House.energy_efficiency_class == reference_value_id,
+            House.capital_repair_fund == reference_value_id,
+            House.has_accessibility == reference_value_id,
+            House.house_type == reference_value_id,
+            House.building_series == reference_value_id,
+            House.is_cultural_heritage == reference_value_id,
+            House.ventilation == reference_value_id,
+            House.sewerage == reference_value_id,
+            House.drainage_system == reference_value_id,
+            House.gas_supply == reference_value_id,
+            House.hot_water_supply == reference_value_id,
+            House.fire_suppression == reference_value_id,
+            House.heating == reference_value_id,
+            House.cold_water_supply == reference_value_id,
+            House.electricity_supply == reference_value_id,
+            House.garbage_chute_type == reference_value_id,
+            House.load_bearing_walls == reference_value_id,
+            House.foundation_type == reference_value_id,
+            House.foundation_material == reference_value_id,
+            House.overlap_type == reference_value_id,
+            House.hot_water_system_type == reference_value_id,
+            House.hot_water_network_material == reference_value_id,
+            House.hot_water_insulation_material == reference_value_id,
+            House.hot_water_riser_material == reference_value_id,
+            House.sewerage_system_type == reference_value_id,
+            House.gas_system_type == reference_value_id,
+            House.internal_walls_type == reference_value_id,
+            House.facade_wall_type == reference_value_id,
+            House.facade_insulation_type == reference_value_id,
+            House.facade_finishing_material == reference_value_id,
+            House.roof_shape == reference_value_id,
+            House.roof_support_structure_type == reference_value_id,
+            House.roof_covering_type == reference_value_id,
+            House.window_material == reference_value_id,
+            House.heating_riser_layout_type == reference_value_id,
+            House.heating_device_type == reference_value_id,
+        )
+
+        stmt = select(House.id).where(filters).limit(1)
+
+        result = await self.execute(
+            stmt, options=Options(strategy=ResultStrategy.SCALAR)
+        )
+
+        return result is not None

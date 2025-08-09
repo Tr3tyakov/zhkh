@@ -48,7 +48,7 @@ class HouseAggregate(IAggregate):
     # --- Технические характеристики ---
     house_type: Optional[str] = None
     building_wear_percent: Optional[float] = None
-    building_wear_date: Optional[date] = None
+    building_wear_date: Optional[datetime] = None
 
     # --- Площади ---
     total_area: Optional[float] = None
