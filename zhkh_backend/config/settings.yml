@@ -40,6 +40,7 @@ default:
   S3:
     port: 9000
     host: minio
+    public_host: localhost
     protocol: http
     verify: true
     access_key: admin

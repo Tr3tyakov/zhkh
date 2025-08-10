@@ -28,7 +28,7 @@ from jinja2 import (
 )
 from weasyprint import HTML
 
-from zhkh_backend.app.application.document_generation.handlers.base import HouseDataMapper
+from app.application.document_generation.handlers.base import HouseDataMapper
 
 
 class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, None]):
