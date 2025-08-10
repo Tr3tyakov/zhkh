@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Box,
-    Typography,
-    Select,
-    MenuItem,
-    useTheme,
+    Button,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
-    RadioGroup, FormControlLabel, Radio, DialogActions, Button, TextField,
+    DialogTitle,
+    MenuItem,
+    Select,
+    TextField,
+    Typography,
+    useTheme,
 } from '@mui/material';
-import { useReferenceBook } from '../hooks/useReferenceBooks/useReferenceBook.ts';
+import {useReferenceBook} from '../hooks/useReferenceBooks/useReferenceBook.ts';
 import AddIcon from '@mui/icons-material/Add';
-import { ReportTypeEnum } from '../../infrastructures/enums/report.ts';
-import { LoadingProgress } from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
 import useSidebar from '../hooks/useSidebar/useSidebar.ts';
-import { useInjection } from '../hooks/useInjection.ts';
-import { IReferenceBookAPI } from '../services/referenceBooks/referenceBookAPI.interfaces.ts';
-import { ReferenceBookAPIKey } from '../services/referenceBooks/key.ts';
-import { handleError } from '../../../shared/common/handlerError.ts';
-import { useEnqueueSnackbar } from '../hooks/useSnackbar/useEnqueueSnackbar.ts';
+import {useInjection} from '../hooks/useInjection.ts';
+import {IReferenceBookAPI} from '../services/referenceBooks/referenceBookAPI.interfaces.ts';
+import {ReferenceBookAPIKey} from '../services/referenceBooks/key.ts';
+import {handleError} from '../../../shared/common/handlerError.ts';
+import {useEnqueueSnackbar} from '../hooks/useSnackbar/useEnqueueSnackbar.ts';
 
 interface CustomSelectProps {
     label: string;
@@ -155,7 +155,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Отмена</Button>
-                    <Button variant="contained" onClick={save}>
+                    <Button disabled={isLoading} variant="contained" onClick={save}>
                         Сохранить
                     </Button>
                 </DialogActions>
