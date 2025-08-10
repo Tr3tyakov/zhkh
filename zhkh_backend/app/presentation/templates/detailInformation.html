@@ -75,16 +75,17 @@
     <div class="report-date">Дата отчета: {{ report_date }}</div>
 </div>
 
-{% for house in houses %}
+{% for row in houses %}
 <div class="house-block">
-    {% for item in fields %}
+    {% for i in range(fields|length) %}
     <div class="field-row">
-        <div class="field-label">{{ item.description }}</div>
+        <div class="field-label">{{ fields[i].description }}</div>
         <div class="field-value">
-            {% if (house | attr(item.field)) is boolean %}
-            {{ 'Да' if (house | attr(item.field)) else 'Нет' }}
+            {% set value = row[i] %}
+            {% if value is boolean %}
+                {{ 'Да' if value else 'Нет' }}
             {% else %}
-            {{ house | attr(item.field) or "—" }}
+                {{ value or "—" }}
             {% endif %}
         </div>
     </div>

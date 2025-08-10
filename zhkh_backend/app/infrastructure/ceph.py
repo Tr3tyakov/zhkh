@@ -9,10 +9,9 @@ from typing import (
 import aioboto3
 from aiobotocore.client import AioBaseClient
 from aiobotocore.response import StreamingBody
+from app.application.common.interfaces.ceph import ICeph
 from botocore.config import Config
 from dynaconf.utils.boxing import DynaBox
-
-from app.application.common.interfaces.ceph import ICeph
 
 
 class CephException(Exception): ...
@@ -26,9 +25,12 @@ class Ceph(ICeph):
             aws_secret_access_key=settings.secret_key,
             region_name=settings.region_name,
         )
+        self._public_endpoint_url = f"{self._settings.protocol}://{self._settings.public_host}:{self._settings.port}"
+        self._internal_endpoint_url = f"{self._settings.protocol}://{self._settings.host}:{self._settings.port}"
+
         self._client_params = {
             "service_name": "s3",
-            "endpoint_url": f"{self._settings.protocol}://{self._settings.host}:{self._settings.port}",
+            "endpoint_url": self._internal_endpoint_url,
             "config": Config(
                 signature_version=self._settings.version,
                 retries={"max_attempts": 10, "mode": "standard"},
@@ -37,8 +39,12 @@ class Ceph(ICeph):
         }
 
     @asynccontextmanager
-    async def client_creator(self) -> AsyncGenerator[AioBaseClient, None]:
-        async with self._session.client(**self._client_params) as s3_client:
+    async def client_creator(self, use_public_endpoint: bool = False) -> AsyncGenerator[AioBaseClient, None]:
+        params = self._client_params.copy()
+        if use_public_endpoint:
+            params["endpoint_url"] = self._public_endpoint_url
+
+        async with self._session.client(**params) as s3_client:
             yield s3_client
 
     @asynccontextmanager
@@ -98,7 +104,7 @@ class Ceph(ICeph):
         logging.info(
             "Создание адреса для загрузки. Bucket: '%s'. Key: '%s'", bucket, key
         )
-        async with self.client_creator() as client:
+        async with self.client_creator(use_public_endpoint=True) as client:
             return await client.generate_presigned_url(
                 "get_object",
                 Params={"Bucket": bucket, "Key": key},

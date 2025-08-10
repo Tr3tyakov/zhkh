@@ -5,4 +5,5 @@ from app.domain.common.schemas.base import PaginationSchema
 
 
 class GetCompaniesQuery(IQuery, PaginationSchema):
+    user_id: int
     search: Optional[str] = None

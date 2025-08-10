@@ -1,14 +1,7 @@
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from typing import List
-
-from jinja2 import (
-    Environment,
-    FileSystemLoader,
-    select_autoescape,
-)
-from weasyprint import HTML
+from typing import List, Dict
 
 from app.application.common.interfaces.ceph import ICeph
 from app.application.common.interfaces.request import IRequestHandler
@@ -21,23 +14,38 @@ from app.config import (
     settings,
 )
 from app.domain.common.interfaces.repositories.house_repository import IHouseRepository
+from app.domain.common.interfaces.repositories.reference_book_value_repository import \
+    IReferenceBookValueRepository
+from app.infrastructure.common.enums.base import ResultStrategy
 from app.infrastructure.common.enums.generation_document import GeneratePDFDocumentType
 from app.infrastructure.containers.utils import Provide
-from app.infrastructure.mediator.pipline_context import PipelineContext
 from app.infrastructure.orm.models import House
+from app.infrastructure.persistence.common.options import Options
+from jinja2 import (
+    Environment,
+    FileSystemLoader,
+    select_autoescape,
+)
+from weasyprint import HTML
+
+from zhkh_backend.app.application.document_generation.handlers.base import HouseDataMapper
 
 
 class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, None]):
     def __init__(
         self,
         ceph: ICeph = Provide[ICeph],
+            reference_book_value_repository: IReferenceBookValueRepository = Provide[IReferenceBookValueRepository],
         house_repository: IHouseRepository = Provide[IHouseRepository],
     ):
         self._ceph = ceph
         self._house_repository = house_repository
+        self._reference_book_value_repository = reference_book_value_repository
+        self._data_mapper = HouseDataMapper(reference_book_value_repository)
+
 
     async def handle(
-        self, command: GeneratePDFDocumentCommand, context: PipelineContext
+            self, command: GeneratePDFDocumentCommand, _
     ) -> str:
         pdf_stream = await self._render_pdf(command)
 
@@ -60,7 +68,13 @@ class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, Non
         env = self._get_env(template_dir)
 
         report_date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-        houses_data = await self._gather_all_houses()
+        houses = await self._gather_all_houses()
+
+        houses_data = []
+        for house in houses:
+            house_dict = await self._data_mapper.map_house_fields(house)
+            row = [house_dict.get(f.field, "") for f in command.fields]
+            houses_data.append(row)
 
         rendered_html = render_func(env, command.fields, houses_data, report_date)
 
@@ -82,22 +96,31 @@ class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, Non
         return houses
 
     def render_table_report_html(
-        self,
-        env: Environment,
-        fields: List[HouseFieldSchema],
-        houses_data: List,
-        report_date: str,
+            self,
+            env: Environment,
+            fields: List[HouseFieldSchema],
+            houses_data: List[dict],  # теперь это список словарей
+            report_date: str,
     ) -> str:
         template = env.get_template("tableInformation.html")
         headers = [f.description for f in fields]
-        rows = [[getattr(house, f.field, "") for f in fields] for house in houses_data]
+
+        num_cols = len(fields)
+        if num_cols <= 10:
+            page_size = "A4"
+        elif num_cols <= 18:
+            page_size = "A3"
+        elif num_cols <= 25:
+            page_size = "A2"
+        else:
+            page_size = "A1"
 
         return template.render(
             headers=headers,
-            rows=rows,
+            rows=houses_data,
             report_date=report_date,
+            page_size=page_size
         )
-
     def render_detailed_report_html(
         self,
         env: Environment,

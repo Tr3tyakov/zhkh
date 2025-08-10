@@ -19,12 +19,6 @@ from app.application.company.contracts.update_company_contract import (
 from app.application.company.queries.get_companies_query import GetCompaniesQuery
 from app.application.company.queries.get_company_query import GetCompanyQuery
 from app.application.company.schemas.base import CompanyResponseSchema
-from app.application.house.commands.attach_house_to_company_command import (
-    AttachHouseToCompanyCommand,
-)
-from app.application.house.contracts.attach_house_to_company_contract import (
-    AttachHouseToCompanyContract,
-)
 from app.domain.company.schemas.company_response_schema import GetCompanyResponseSchema
 from app.infrastructure.common.decorators.secure import secure
 from app.infrastructure.common.decorators.session.inject_session import inject_session
@@ -41,9 +35,9 @@ company_router = LoggingRouter(prefix="/api", tags=["companies"])
 @inject_session
 @secure(setup_user=True)
 async def create_company(
-    request: Request,
-    data: CreateCompanyContract,
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        data: CreateCompanyContract,
+        mediator: IMediator = Depends(Provide[IMediator]),
 ) -> None:
     return await mediator.send(
         CreateCompanyCommand(user_id=request.state.user_id, **data.model_dump())
@@ -57,9 +51,9 @@ async def create_company(
 @inject_session
 @secure()
 async def get_company_information(
-    request: Request,
-    company_id: int,
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        company_id: int,
+        mediator: IMediator = Depends(Provide[IMediator]),
 ) -> CompanyResponseSchema:
     return await mediator.send(GetCompanyQuery(company_id=company_id))
 
@@ -69,16 +63,16 @@ async def get_company_information(
     description="Получение информации по компаниям",
 )
 @inject_session
-@secure()
+@secure(setup_user=True)
 async def get_companies_information(
-    request: Request,
-    limit: int = Query(10, ge=1, le=100),
-    offset: int = Query(0, ge=0),
-    search: Optional[str] = Query(None),
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        limit: int = Query(10, ge=1, le=100),
+        offset: int = Query(0, ge=0),
+        search: Optional[str] = Query(None),
+        mediator: IMediator = Depends(Provide[IMediator]),
 ) -> GetCompanyResponseSchema:
     return await mediator.send(
-        GetCompaniesQuery(limit=limit, offset=offset, search=search)
+        GetCompaniesQuery(user_id=request.state.user_id, limit=limit, offset=offset, search=search)
     )
 
 
@@ -89,10 +83,10 @@ async def get_companies_information(
 @inject_session
 @secure()
 async def update_company(
-    request: Request,
-    company_id: int,
-    data: UpdateCompanyContract,
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        company_id: int,
+        data: UpdateCompanyContract,
+        mediator: IMediator = Depends(Provide[IMediator]),
 ):
     return await mediator.send(
         UpdateCompanyCommand(company_id=company_id, **data.model_dump())
@@ -106,9 +100,9 @@ async def update_company(
 @inject_session
 @secure(setup_user=True)
 async def delete_company(
-    request: Request,
-    company_id: int,
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        company_id: int,
+        mediator: IMediator = Depends(Provide[IMediator]),
 ):
     return await mediator.send(
         DeleteCompanyCommand(user_id=request.state.user_id, company_id=company_id)

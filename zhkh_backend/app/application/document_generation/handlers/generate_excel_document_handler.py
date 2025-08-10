@@ -2,10 +2,6 @@ from datetime import datetime
 from io import BytesIO
 from typing import List
 
-from openpyxl import Workbook
-from openpyxl.styles import Alignment
-from openpyxl.utils import get_column_letter
-
 from app.application.common.interfaces.ceph import ICeph
 from app.application.common.interfaces.request import IRequestHandler
 from app.application.document_generation.commands.generate_excel_document_command import (
@@ -16,6 +12,13 @@ from app.config import settings
 from app.domain.common.interfaces.repositories.house_repository import IHouseRepository
 from app.infrastructure.containers.utils import Provide
 from app.infrastructure.mediator.pipline_context import PipelineContext
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from openpyxl.utils import get_column_letter
+
+from zhkh_backend.app.application.document_generation.handlers.base import HouseDataMapper
+from zhkh_backend.app.domain.common.interfaces.repositories.reference_book_value_repository import \
+    IReferenceBookValueRepository
 
 
 class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand, None]):
@@ -23,12 +26,17 @@ class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand,
         self,
         ceph: ICeph = Provide[ICeph],
         house_repository: IHouseRepository = Provide[IHouseRepository],
+            reference_book_value_repository: IReferenceBookValueRepository = Provide[IReferenceBookValueRepository],
+
     ):
         self._ceph = ceph
         self._house_repository = house_repository
+        self._reference_book_value_repository = reference_book_value_repository
+
+        self._data_mapper = HouseDataMapper(reference_book_value_repository)
 
     async def handle(
-        self, command: GenerateExcelDocumentCommand, context: PipelineContext
+        self, command: GenerateExcelDocumentCommand, _
     ) -> str:
         excel_stream = await self._render_excel(command.fields)
 
@@ -62,7 +70,8 @@ class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand,
 
         async for chunk in self._house_repository.get_all_houses_by_chunk():
             for house in chunk:
-                row = [getattr(house, f.field, "") for f in fields]
+                house_dict = await self._data_mapper.map_house_fields(house)
+                row = [house_dict.get(f.field, "") for f in fields]
                 ws.append(row)
 
         stream = BytesIO()

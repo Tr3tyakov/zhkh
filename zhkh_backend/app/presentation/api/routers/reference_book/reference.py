@@ -10,12 +10,6 @@ from app.application.reference_book.queries.get_reference_books_query import (
 from app.application.reference_book.schemas.get_reference_books_schema import (
     ReferenceBookListResponseSchema,
 )
-from app.application.reference_book_value.commands.create_reference_book_value_command import (
-    CreateReferenceBookValueCommand,
-)
-from app.application.reference_book_value.contracts.create_reference_book_balue_contract import (
-    CreateReferenceBookValueContract,
-)
 from app.infrastructure.common.decorators.secure import secure
 from app.infrastructure.common.decorators.session.inject_session import inject_session
 from app.infrastructure.containers.utils import Provide
@@ -29,9 +23,9 @@ reference_book_router = LoggingRouter(prefix="/api", tags=["reference_book"])
     description="Получение справочников",
 )
 @inject_session
-@secure()
+@secure(setup_user=True)
 async def get_reference_book_value(
-    request: Request,
-    mediator: IMediator = Depends(Provide[IMediator]),
+        request: Request,
+        mediator: IMediator = Depends(Provide[IMediator]),
 ) -> ReferenceBookListResponseSchema:
-    return await mediator.send(GetReferenceBooksQuery())
+    return await mediator.send(GetReferenceBooksQuery(user_id=request.state.user_id))

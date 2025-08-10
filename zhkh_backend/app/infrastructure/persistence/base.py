@@ -130,21 +130,22 @@ class BaseRepository(IBaseRepository):
 
         return stmt
 
-    def _integrate_filters(self, stmt: Select, filters: BaseFilter) -> Select:
-        filter_fields = filters.model_dump(
-            exclude_none=True, exclude={"limit", "offset"}
-        ).items()
+    def _integrate_filters(self, stmt: Select, filters: Optional[BaseFilter]=None) -> Select:
+        if filters:
+            filter_fields = filters.model_dump(
+                exclude_none=True, exclude={"limit", "offset"}
+            ).items()
 
-        for field, filter_value in filter_fields:
-            operator_func, value = filter_value
-            column = getattr(self.translator.orm_model, field)
-            stmt = stmt.where(operator_func(column, value))
+            for field, filter_value in filter_fields:
+                operator_func, value = filter_value
+                column = getattr(self.translator.orm_model, field)
+                stmt = stmt.where(operator_func(column, value))
 
-        if filters.limit is not None:
-            stmt = stmt.limit(filters.limit)
+            if filters.limit is not None:
+                stmt = stmt.limit(filters.limit)
 
-        if filters.offset is not None:
-            stmt = stmt.offset(filters.offset)
+            if filters.offset is not None:
+                stmt = stmt.offset(filters.offset)
 
         return stmt
 

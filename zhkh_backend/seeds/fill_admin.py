@@ -20,7 +20,7 @@ from app.infrastructure.postgres import Database
 from sqlalchemy import select
 async def seed_user(session: AsyncSession):
     async with session.begin():
-        user =(await session.execute(select(User).where(User.email == "admin@service.local"))).scalars().first()
+        user =(await session.execute(select(User).where(User.email == "admin@service.ru"))).scalars().first()
         if user:
             return
 

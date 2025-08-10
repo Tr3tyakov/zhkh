@@ -4,8 +4,6 @@ from typing import (
     List,
 )
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.config import (
     DB_URL,
     settings,
@@ -15,6 +13,8 @@ from app.infrastructure.orm.models import (
     ReferenceBookValue,
 )
 from app.infrastructure.postgres import Database
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 full_reference_data = {
     "Тип дома": ["Многоквартирный дом"],
@@ -187,7 +187,12 @@ full_reference_data = {
 async def seed_insert_reference_books(
     session: AsyncSession, full_reference_data: Dict[str, List[str]]
 ):
-    async with session.begin():  # автоматически commit или rollback
+    async with session.begin():
+        existing_reference_book = await session.execute(select(ReferenceBook.id).limit(1))
+        if existing_reference_book.scalars().first() is not None:
+            print("Справочники уже есть в базе, сид пропущен")
+            return
+
         name_to_refbook = {}
 
         for ref_name in full_reference_data:

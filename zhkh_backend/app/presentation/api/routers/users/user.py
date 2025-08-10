@@ -82,7 +82,7 @@ async def get_current_user(
     description="Получение пользователей системы",
 )
 @inject_session
-@secure()
+@secure(setup_user=True)
 async def get_users(
     request: Request,
     limit: int = Query(10, ge=1, le=100),
@@ -98,6 +98,7 @@ async def get_users(
 ) -> UserListResponseSchema:
     return await mediator.send(
         GetUsersQuery(
+            user_id=request.state.user_id,
             limit=limit,
             offset=offset,
             user_type=user_type,

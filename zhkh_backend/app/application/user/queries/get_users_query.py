@@ -9,6 +9,7 @@ from app.infrastructure.common.enums.user import (
 
 
 class GetUsersQuery(IQuery, PaginationSchema):
+    user_id: int
     user_type: Optional[UserTypeEnum] = None
     account_status: Optional[UserAccountStatusEnum] = None
     search: Optional[str] = None

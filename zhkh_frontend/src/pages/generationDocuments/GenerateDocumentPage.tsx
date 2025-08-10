@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
@@ -14,19 +14,19 @@ import {
     RadioGroup,
     Typography,
 } from '@mui/material';
-import { useEnqueueSnackbar } from '../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
-import { getErrorLog, getErrorMessage } from '../../shared/api/base.ts';
-import { useInjection } from '../../app/domain/hooks/useInjection.ts';
-import { IHouseAPI, IHouseField } from '../../app/domain/services/houses/houseAPI.interfaces.ts';
-import { HouseAPIKey } from '../../app/domain/services/houses/key.ts';
-import { LoadingProgress } from '../../shared/loading/loadingProgress/LoadingProgress.tsx';
-import { DocumentGenerationAPIKey } from '../../app/domain/services/documentGeneration/key.ts';
-import { IDocumentGenerationAPI } from '../../app/domain/services/documentGeneration/documentGenerationAPI.interfaces.ts';
-import { ReportTypeEnum } from '../../app/infrastructures/enums/report.ts';
-import { AuditLogEnum, EntityTypeEnum } from '../../app/infrastructures/enums/auditLog.ts';
-import { IAuditLogAPI } from '../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
-import { AuditLogAPIKey } from '../../app/domain/services/auditLogs/key.ts';
-import { useUser } from '../../app/domain/hooks/useUser/useUser.ts';
+import {useEnqueueSnackbar} from '../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
+import {getErrorLog, getErrorMessage} from '../../shared/api/base.ts';
+import {useInjection} from '../../app/domain/hooks/useInjection.ts';
+import {IHouseAPI, IHouseField} from '../../app/domain/services/houses/houseAPI.interfaces.ts';
+import {HouseAPIKey} from '../../app/domain/services/houses/key.ts';
+import {LoadingProgress} from '../../shared/loading/loadingProgress/LoadingProgress.tsx';
+import {DocumentGenerationAPIKey} from '../../app/domain/services/documentGeneration/key.ts';
+import {IDocumentGenerationAPI} from '../../app/domain/services/documentGeneration/documentGenerationAPI.interfaces.ts';
+import {ReportTypeEnum} from '../../app/infrastructures/enums/report.ts';
+import {AuditLogEnum, EntityTypeEnum} from '../../app/infrastructures/enums/auditLog.ts';
+import {IAuditLogAPI} from '../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
+import {AuditLogAPIKey} from '../../app/domain/services/auditLogs/key.ts';
+import {useUser} from '../../app/domain/hooks/useUser/useUser.ts';
 
 const HouseGenerateDocumentPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -222,8 +222,9 @@ const HouseGenerateDocumentPage: React.FC = () => {
                     </RadioGroup>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseReportTypeDialog}>Отмена</Button>
-                    <Button onClick={handleExportPDF} variant="contained" disabled={isLoading}>
+                    <Button disabled={isLoading} onClick={handleCloseReportTypeDialog}>Отмена</Button>
+                    <Button disabled={isLoading || selectedFields.length == 0} onClick={handleExportPDF}
+                            variant="contained">
                         <LoadingProgress isLoading={isLoading} value="Экспортировать" />
                     </Button>
                 </DialogActions>

@@ -23,4 +23,4 @@ class GetCompaniesHandler(IRequestHandler[GetCompaniesQuery, None]):
     async def handle(
         self, query: GetCompaniesQuery, context: PipelineContext
     ) -> GetCompanyResponseSchema:
-        return await self._company_query_repository.get_companies(**query.model_dump())
+        return await self._company_query_repository.get_companies(**query.model_dump(exclude={"user_id"}))
