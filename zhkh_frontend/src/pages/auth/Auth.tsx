@@ -37,9 +37,9 @@ export const Auth = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Collapse in={!isSignIn} orientation="vertical" unmountOnExit>
-                    <SignUp changeIsSignIn={changeIsSignIn} />
-                </Collapse>
+                {/*<Collapse in={!isSignIn} orientation="vertical" unmountOnExit>*/}
+                {/*    <SignUp changeIsSignIn={changeIsSignIn} />*/}
+                {/*</Collapse>*/}
                 <Collapse in={isSignIn} orientation="vertical" unmountOnExit>
                     <SignIn changeIsSignIn={changeIsSignIn} />
                 </Collapse>

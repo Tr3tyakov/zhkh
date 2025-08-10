@@ -106,12 +106,12 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
                     <Button disabled={isLoading} type="submit" fullWidth variant="contained">
                         <LoadingProgress isLoading={isLoading} value="Войти" />
                     </Button>
-                    <Box display="flex" mt="10px" gap="6px">
-                        <Typography>Нет аккаунта?</Typography>
-                        <Typography onClick={changeIsSignIn} className="pointer" color="primary">
-                            Зарегистрироваться
-                        </Typography>
-                    </Box>
+                    {/*<Box display="flex" mt="10px" gap="6px">*/}
+                    {/*    /!*<Typography>Нет аккаунта?</Typography>*!/*/}
+                    {/*    <Typography onClick={changeIsSignIn} className="pointer" color="primary">*/}
+                    {/*        Зарегистрироваться*/}
+                    {/*    </Typography>*/}
+                    {/*</Box>*/}
                 </Box>
             </Box>
         </form>
