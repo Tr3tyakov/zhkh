@@ -8,12 +8,6 @@ services:
     container_name: frontend
     ports:
       - "5173:5173"
-    volumes:
-      - ./zhkh_frontend/src:/app/src
-      - /app/node_modules
-    environment:
-      - VITE_API_URL=http://backend:8000
-      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
     networks:
