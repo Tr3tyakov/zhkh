@@ -3,9 +3,6 @@ from app.application.company.queries.get_companies_query import GetCompaniesQuer
 from app.domain.common.interfaces.repositories.queries.company_query_repository import (
     ICompanyQueryRepository,
 )
-from app.domain.common.interfaces.repositories.queries.house_query_repository import (
-    IHouseQueryRepository,
-)
 from app.domain.company.schemas.company_response_schema import GetCompanyResponseSchema
 from app.infrastructure.containers.utils import Provide
 from app.infrastructure.mediator.pipline_context import PipelineContext
@@ -23,4 +20,6 @@ class GetCompaniesHandler(IRequestHandler[GetCompaniesQuery, None]):
     async def handle(
         self, query: GetCompaniesQuery, context: PipelineContext
     ) -> GetCompanyResponseSchema:
-        return await self._company_query_repository.get_companies(**query.model_dump(exclude={"user_id"}))
+        return await self._company_query_repository.get_companies(
+            **query.model_dump(exclude={"user_id"})
+        )

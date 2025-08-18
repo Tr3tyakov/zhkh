@@ -25,7 +25,7 @@ reference_book_router = LoggingRouter(prefix="/api", tags=["reference_book"])
 @inject_session
 @secure(setup_user=True)
 async def get_reference_book_value(
-        request: Request,
-        mediator: IMediator = Depends(Provide[IMediator]),
+    request: Request,
+    mediator: IMediator = Depends(Provide[IMediator]),
 ) -> ReferenceBookListResponseSchema:
     return await mediator.send(GetReferenceBooksQuery(user_id=request.state.user_id))

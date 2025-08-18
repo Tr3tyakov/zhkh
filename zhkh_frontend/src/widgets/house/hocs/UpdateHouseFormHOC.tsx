@@ -34,7 +34,7 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
                 const data = await houseAPI.getHouseInformation(Number(id));
                 setInitialValues(data);
             } catch (e) {
-                    handleError(e, openSnackbar);
+                handleError(e, openSnackbar);
             } finally {
                 setIsLoading(false);
             }

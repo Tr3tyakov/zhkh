@@ -11,7 +11,13 @@ import { CustomSelect } from '../../app/domain/components/CustomSelect';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
 import { useNavigate } from 'react-router-dom';
 
-export const HouseForm: React.FC<IHouseForm> = ({ id, initialValues, isLoading, onSubmit, title }) => {
+export const HouseForm: React.FC<IHouseForm> = ({
+    id,
+    initialValues,
+    isLoading,
+    onSubmit,
+    title,
+}) => {
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -41,7 +47,10 @@ export const HouseForm: React.FC<IHouseForm> = ({ id, initialValues, isLoading, 
         />
     );
 
-    const renderFields = (fields: { name: string; label: string; type?: string, mask?: string }[], width = 400) =>
+    const renderFields = (
+        fields: { name: string; label: string; type?: string; mask?: string }[],
+        width = 400
+    ) =>
         fields.map(({ name, label, type }) => (
             <FieldGroup
                 key={name}
@@ -54,7 +63,7 @@ export const HouseForm: React.FC<IHouseForm> = ({ id, initialValues, isLoading, 
         ));
 
     const renderReferenceFields = (
-        fields: { name: string; label: string; referenceKey?: string }[],
+        fields: { name: string; label: string; referenceKey?: string }[]
     ) => {
         return fields.map(({ name, label, referenceKey }) => {
             const options = referenceKey ? referenceBooks?.[referenceKey] || [] : null;
@@ -384,7 +393,6 @@ export const HouseForm: React.FC<IHouseForm> = ({ id, initialValues, isLoading, 
                     </Box>
                 </Box>
             </Container>
-
         </form>
     );
 };

@@ -48,8 +48,11 @@ export const CurrentCompany = () => {
                         </Typography>
                     </Breadcrumbs>
                     <Box>
-                        <Button onClick={() => navigate(`/companies/edit-company/${companyData?.id}`)} variant="contained"
-                                size="small">
+                        <Button
+                            onClick={() => navigate(`/companies/edit-company/${companyData?.id}`)}
+                            variant="contained"
+                            size="small"
+                        >
                             Редактировать управляющую компанию
                         </Button>
                     </Box>

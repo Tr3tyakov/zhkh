@@ -20,7 +20,7 @@ export const AttachedHouse: React.FC<IAttachedHouse> = ({ companyId }) => {
     const [inputValue, setInputValue] = useState('');
     const [houses, setHouses] = useState<{ id: number; address: string }[]>([]);
     const [selectedHouse, setSelectedHouse] = useState<{ id: number; address: string } | null>(
-        null,
+        null
     );
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingAttach, setIsLoadingAttach] = useState(false);
@@ -41,7 +41,7 @@ export const AttachedHouse: React.FC<IAttachedHouse> = ({ companyId }) => {
                 data.houses.map((element) => ({
                     id: element.id,
                     address: formatHouseAddress(element) ?? '',
-                })),
+                }))
             );
         } catch (e) {
             openSnackbar({ message: getErrorMessage(e), variant: 'default' });

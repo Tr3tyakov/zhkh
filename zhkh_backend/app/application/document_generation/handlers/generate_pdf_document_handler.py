@@ -1,26 +1,8 @@
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from typing import List, Dict
+from typing import List
 
-from app.application.common.interfaces.ceph import ICeph
-from app.application.common.interfaces.request import IRequestHandler
-from app.application.document_generation.commands.generate_pdf_document_command import (
-    GeneratePDFDocumentCommand,
-)
-from app.application.house.schemas.house_fields_schema import HouseFieldSchema
-from app.config import (
-    PROJECT_DIR,
-    settings,
-)
-from app.domain.common.interfaces.repositories.house_repository import IHouseRepository
-from app.domain.common.interfaces.repositories.reference_book_value_repository import \
-    IReferenceBookValueRepository
-from app.infrastructure.common.enums.base import ResultStrategy
-from app.infrastructure.common.enums.generation_document import GeneratePDFDocumentType
-from app.infrastructure.containers.utils import Provide
-from app.infrastructure.orm.models import House
-from app.infrastructure.persistence.common.options import Options
 from jinja2 import (
     Environment,
     FileSystemLoader,
@@ -28,14 +10,33 @@ from jinja2 import (
 )
 from weasyprint import HTML
 
+from app.application.common.interfaces.ceph import ICeph
+from app.application.common.interfaces.request import IRequestHandler
+from app.application.document_generation.commands.generate_pdf_document_command import (
+    GeneratePDFDocumentCommand,
+)
 from app.application.document_generation.handlers.base import HouseDataMapper
+from app.application.house.schemas.house_fields_schema import HouseFieldSchema
+from app.config import (
+    PROJECT_DIR,
+    settings,
+)
+from app.domain.common.interfaces.repositories.house_repository import IHouseRepository
+from app.domain.common.interfaces.repositories.reference_book_value_repository import (
+    IReferenceBookValueRepository,
+)
+from app.infrastructure.common.enums.generation_document import GeneratePDFDocumentType
+from app.infrastructure.containers.utils import Provide
+from app.infrastructure.orm.models import House
 
 
 class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, None]):
     def __init__(
         self,
         ceph: ICeph = Provide[ICeph],
-            reference_book_value_repository: IReferenceBookValueRepository = Provide[IReferenceBookValueRepository],
+        reference_book_value_repository: IReferenceBookValueRepository = Provide[
+            IReferenceBookValueRepository
+        ],
         house_repository: IHouseRepository = Provide[IHouseRepository],
     ):
         self._ceph = ceph
@@ -43,10 +44,7 @@ class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, Non
         self._reference_book_value_repository = reference_book_value_repository
         self._data_mapper = HouseDataMapper(reference_book_value_repository)
 
-
-    async def handle(
-            self, command: GeneratePDFDocumentCommand, _
-    ) -> str:
+    async def handle(self, command: GeneratePDFDocumentCommand, _) -> str:
         pdf_stream = await self._render_pdf(command)
 
         filename = f"houses_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
@@ -96,11 +94,11 @@ class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, Non
         return houses
 
     def render_table_report_html(
-            self,
-            env: Environment,
-            fields: List[HouseFieldSchema],
-            houses_data: List[dict],  # теперь это список словарей
-            report_date: str,
+        self,
+        env: Environment,
+        fields: List[HouseFieldSchema],
+        houses_data: List[dict],
+        report_date: str,
     ) -> str:
         template = env.get_template("tableInformation.html")
         headers = [f.description for f in fields]
@@ -119,8 +117,9 @@ class GeneratePdfDocumentHandler(IRequestHandler[GeneratePDFDocumentCommand, Non
             headers=headers,
             rows=houses_data,
             report_date=report_date,
-            page_size=page_size
+            page_size=page_size,
         )
+
     def render_detailed_report_html(
         self,
         env: Environment,

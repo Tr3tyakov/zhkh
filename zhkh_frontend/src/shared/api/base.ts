@@ -14,16 +14,30 @@ API.interceptors.response.use(
             Cookies.remove('access_token');
             window.location.href = '/auth';
         }
-        if (error.response?.status === 400 && error.response.data.detail.error === 'Отсутствует доступ к ресурсу' && window.location.pathname != '/auth') {
+        if (
+            error.response?.status === 400 &&
+            error.response.data.detail.error === 'Отсутствует доступ к ресурсу' &&
+            window.location.pathname != '/auth'
+        ) {
+            Cookies.remove('access_token');
+            window.location.href = '/auth';
+        }
+
+        if (!error.response && window.location.pathname != '/auth') {
             Cookies.remove('access_token');
             window.location.href = '/auth';
         }
         return Promise.reject(error);
-    },
+    }
 );
 
 const getErrorMessage = (e: unknown): string => {
     const error = e as AxiosError<ErrorResponse>;
+
+    if (!error.response) {
+        return 'Отсутствует соединение с контейнером';
+    }
+
     return (
         error?.response?.data?.detail?.text ||
         error?.response?.data?.detail?.error ||
@@ -37,7 +51,6 @@ const getErrorLog = (e: unknown) => {
             message: e.message,
             name: e.name,
             stack: e.stack,
-            // Проверим, если это AxiosError
             ...(isAxiosError(e) && {
                 config: e.config,
                 response: e.response,

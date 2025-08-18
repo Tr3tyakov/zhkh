@@ -10,10 +10,10 @@ import { getErrorMessage } from '../../../../../shared/api/base.ts';
 import { handleError } from '../../../../../shared/common/handlerError.ts';
 
 export const UploadFileButton: React.FC<IUploadFileButton> = ({
-                                                                  category,
-                                                                  houseId,
-                                                                  onUploadSuccess,
-                                                              }) => {
+    category,
+    houseId,
+    onUploadSuccess,
+}) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const userAPI = useInjection<IUserAPI>(UserAPIKey);
     const { openSnackbar } = useEnqueueSnackbar();

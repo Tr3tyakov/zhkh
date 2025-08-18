@@ -20,4 +20,6 @@ class GetUsersHandler(IRequestHandler[GetUsersQuery, None]):
     async def handle(
         self, query: GetUsersQuery, context: PipelineContext
     ) -> UserListResponseSchema:
-        return await self._user_query_repository.get_users(**query.model_dump(exclude={"user_id"}))
+        return await self._user_query_repository.get_users(
+            **query.model_dump(exclude={"user_id"})
+        )

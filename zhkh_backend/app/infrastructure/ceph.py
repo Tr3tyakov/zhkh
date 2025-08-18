@@ -9,9 +9,10 @@ from typing import (
 import aioboto3
 from aiobotocore.client import AioBaseClient
 from aiobotocore.response import StreamingBody
-from app.application.common.interfaces.ceph import ICeph
 from botocore.config import Config
 from dynaconf.utils.boxing import DynaBox
+
+from app.application.common.interfaces.ceph import ICeph
 
 
 class CephException(Exception): ...
@@ -26,7 +27,9 @@ class Ceph(ICeph):
             region_name=settings.region_name,
         )
         self._public_endpoint_url = f"{self._settings.protocol}://{self._settings.public_host}:{self._settings.port}"
-        self._internal_endpoint_url = f"{self._settings.protocol}://{self._settings.host}:{self._settings.port}"
+        self._internal_endpoint_url = (
+            f"{self._settings.protocol}://{self._settings.host}:{self._settings.port}"
+        )
 
         self._client_params = {
             "service_name": "s3",
@@ -39,7 +42,9 @@ class Ceph(ICeph):
         }
 
     @asynccontextmanager
-    async def client_creator(self, use_public_endpoint: bool = False) -> AsyncGenerator[AioBaseClient, None]:
+    async def client_creator(
+        self, use_public_endpoint: bool = False
+    ) -> AsyncGenerator[AioBaseClient, None]:
         params = self._client_params.copy()
         if use_public_endpoint:
             params["endpoint_url"] = self._public_endpoint_url

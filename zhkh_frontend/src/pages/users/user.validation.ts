@@ -9,8 +9,12 @@ const DefaultUserValidationSchema = {
         .required('Почта обязательна'),
     userType: Yup.string().required('Тип пользователя обязателен'),
     accountStatus: Yup.string().required('Тип аккаунта обязателен'),
-    workPhone: Yup.string().nullable().matches(/^\+?[\d\s\-()]+$/, 'Некорректный номер телефона'),
-    privatePhone: Yup.string().nullable().matches(/^\+?[\d\s\-()]+$/, 'Некорректный номер телефона'),
+    workPhone: Yup.string()
+        .nullable()
+        .matches(/^\+?[\d\s\-()]+$/, 'Некорректный номер телефона'),
+    privatePhone: Yup.string()
+        .nullable()
+        .matches(/^\+?[\d\s\-()]+$/, 'Некорректный номер телефона'),
 };
 
 export const UpdateUserValidationSchema = Yup.object({

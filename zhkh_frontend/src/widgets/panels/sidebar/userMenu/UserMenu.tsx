@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { Avatar, Box, ListItemButton, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
+import {
+    Avatar,
+    Box,
+    ListItemButton,
+    ListItemIcon,
+    Menu,
+    MenuItem,
+    Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PersonIcon from "@mui/icons-material/Person";
-import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Cookies from 'js-cookie';
 export const UserMenu = ({ user }: { user: any }) => {
     const navigate = useNavigate();
@@ -23,8 +31,8 @@ export const UserMenu = ({ user }: { user: any }) => {
 
     const handleLogout = () => {
         handleCloseMenu();
-        Cookies.remove("refresh_token");
-        Cookies.remove("access_token");
+        Cookies.remove('refresh_token');
+        Cookies.remove('access_token');
         navigate(`/auth`);
     };
 
@@ -34,11 +42,7 @@ export const UserMenu = ({ user }: { user: any }) => {
                 <Box display="flex" alignItems="center" gap="10px">
                     <Avatar src={user?.filePath} />
                     <Box display="flex" justifyContent="center" flexDirection="column">
-                        <Typography
-                            fontSize="14px"
-                            color="primary.contrastText"
-                            fontWeight={600}
-                        >
+                        <Typography fontSize="14px" color="primary.contrastText" fontWeight={600}>
                             {user?.firstName} {user?.middleName}
                         </Typography>
                     </Box>
@@ -70,8 +74,7 @@ export const UserMenu = ({ user }: { user: any }) => {
                     </ListItemIcon>
                     Выход
                 </MenuItem>
-        </Menu>
-</Box>
-)
-    ;
+            </Menu>
+        </Box>
+    );
 };

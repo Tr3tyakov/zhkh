@@ -4,7 +4,7 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     curl build-essential libpq-dev \
     postgresql-client \
-    libpangoft2-1.0-0 libpango-1.0-0 libcairo2 libgdk-pixbuf2.0-0 libffi-dev \
+    libpangoft2-1.0-0 libpango-1.0-0 libcairo2 libffi-dev \
     libglib2.0-0 shared-mime-info fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/* \
     && pip install --upgrade pip --no-cache-dir

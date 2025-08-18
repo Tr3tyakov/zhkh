@@ -64,7 +64,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
         limit: number,
         offset: number,
         filters: IHouseFiltersState,
-        query: IHouseQueryParams,
+        query: IHouseQueryParams
     ) {
         const params = {
             limit,
@@ -75,7 +75,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
 
         const response = await this.API.get('/houses', {
             params,
-            paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
+            paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
             headers: { Authorization: this.bearer },
         });
 
@@ -119,7 +119,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
             },
             {
                 headers: { Authorization: this.bearer },
-            },
+            }
         );
     }
 
@@ -137,7 +137,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
             },
             {
                 headers: { Authorization: this.bearer },
-            },
+            }
         );
     }
 
@@ -152,7 +152,7 @@ export class HouseAPI extends DefaultAPI implements IHouseAPI {
         companyId: number,
         limit: number,
         offset: number,
-        searchValue?: string,
+        searchValue?: string
     ) {
         const params = {
             limit,

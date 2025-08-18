@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -13,12 +13,14 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    TextField
-} from "@mui/material";
+    TextField,
+} from '@mui/material';
 import useDebounce from '../../../app/domain/hooks/useDebounce/useDebounce.ts';
 import { LoadingProgress } from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
-import { accountStatusOptions, typeOptions } from '../../../app/infrastructures/enums/translation/user.ts';
-
+import {
+    accountStatusOptions,
+    typeOptions,
+} from '../../../app/infrastructures/enums/translation/user.ts';
 
 interface FiltersProps<S> {
     filters: Partial<S>;
@@ -34,12 +36,12 @@ export function UserFilter<S extends Record<string, any>>({
     setPage,
 }: FiltersProps<S>) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [textField, setTextField] = useState("");
+    const [textField, setTextField] = useState('');
     const debouncedText = useDebounce(textField, 500);
 
     const handleReset = () => {
         setFilters({});
-        setTextField("");
+        setTextField('');
         setPage(1);
     };
 
@@ -56,7 +58,7 @@ export function UserFilter<S extends Record<string, any>>({
     useEffect(() => {
         setFilters((prev) => ({
             ...prev,
-            searchValue: debouncedText || "",
+            searchValue: debouncedText || '',
         }));
         setPage(1);
     }, [debouncedText]);
@@ -109,18 +111,20 @@ export function UserFilter<S extends Record<string, any>>({
                                 labelId="user-type-label"
                                 multiple
                                 value={filters.userType || []}
-                                onChange={handleMultiSelectChange("userType")}
+                                onChange={handleMultiSelectChange('userType')}
                                 input={<OutlinedInput label="Тип пользователя" />}
                                 renderValue={(selected) =>
                                     typeOptions
                                         .filter((opt) => (selected as string[]).includes(opt.id))
                                         .map((opt) => opt.value)
-                                        .join(", ")
+                                        .join(', ')
                                 }
                             >
                                 {typeOptions.map((option) => (
                                     <MenuItem key={option.id} value={option.id}>
-                                        <Checkbox checked={filters.userType?.includes(option.id) || false} />
+                                        <Checkbox
+                                            checked={filters.userType?.includes(option.id) || false}
+                                        />
                                         <ListItemText primary={option.value} />
                                     </MenuItem>
                                 ))}
@@ -133,18 +137,22 @@ export function UserFilter<S extends Record<string, any>>({
                                 labelId="account-status-label"
                                 multiple
                                 value={filters.accountStatus || []}
-                                onChange={handleMultiSelectChange("accountStatus")}
+                                onChange={handleMultiSelectChange('accountStatus')}
                                 input={<OutlinedInput label="Статус пользователя" />}
                                 renderValue={(selected) =>
                                     accountStatusOptions
                                         .filter((opt) => (selected as string[]).includes(opt.id))
                                         .map((opt) => opt.value)
-                                        .join(", ")
+                                        .join(', ')
                                 }
                             >
                                 {accountStatusOptions.map((option) => (
                                     <MenuItem key={option.id} value={option.id}>
-                                        <Checkbox checked={filters.accountStatus?.includes(option.id) || false} />
+                                        <Checkbox
+                                            checked={
+                                                filters.accountStatus?.includes(option.id) || false
+                                            }
+                                        />
                                         <ListItemText primary={option.value} />
                                     </MenuItem>
                                 ))}

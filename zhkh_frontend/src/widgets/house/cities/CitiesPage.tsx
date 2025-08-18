@@ -25,8 +25,7 @@ export const CitiesPage = () => {
             const data = await houseAPI.getCities();
             setCities(data);
         } catch (e) {
-                    handleError(e, openSnackbar);
-
+            handleError(e, openSnackbar);
         } finally {
             setIsLoading(false);
         }

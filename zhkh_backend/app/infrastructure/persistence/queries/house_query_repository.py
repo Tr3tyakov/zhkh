@@ -8,13 +8,18 @@ from sqlalchemy import (
     case,
     distinct,
     func,
-    select, or_,
+    or_,
+    select,
 )
 
 from app.application.common.interfaces.ceph import ICeph
-from app.application.house.queries.get_attached_houses_query import GetAttachedHousesQuery
+from app.application.house.queries.get_attached_houses_query import (
+    GetAttachedHousesQuery,
+)
 from app.application.house.queries.get_houses_query import GetHousesQuery
-from app.application.house.queries.get_unattached_houses_query import GetUnAttachedHousesQuery
+from app.application.house.queries.get_unattached_houses_query import (
+    GetUnAttachedHousesQuery,
+)
 from app.application.house.schemas.base import HouseResponseSchema
 from app.application.house.schemas.get_house_files_schema import (
     GetHouseFilesResponseSchema,
@@ -29,9 +34,7 @@ from app.domain.common.schemas.house_response_schema import GetHouseResponseSche
 from app.infrastructure.common.enums.base import ResultStrategy
 from app.infrastructure.common.enums.user import FileCategoryEnum
 from app.infrastructure.containers.utils import Provide
-from app.infrastructure.orm.models import (
-    House,
-)
+from app.infrastructure.orm.models import House
 from app.infrastructure.orm.models.file import File
 from app.infrastructure.orm.models.m2m.house_file import HouseFileM2M
 from app.infrastructure.persistence.base import BaseRepository
@@ -44,31 +47,27 @@ class HouseQueryRepository(BaseRepository, IHouseQueryRepository):
         self._ceph = ceph
         super().__init__()
 
-    async def get_unattached_houses(self, query: GetUnAttachedHousesQuery) -> GetHouseResponseSchema:
-        stmt = select(House).where(
-            House.company_id == None
-        )
+    async def get_unattached_houses(
+        self, query: GetUnAttachedHousesQuery
+    ) -> GetHouseResponseSchema:
+        stmt = select(House).where(House.company_id == None)
 
         stmt = self._get_search_stmt(stmt, query.search)
         stmt = stmt.order_by(House.id)
-        houses, count = await self.get_pagination_data(
-            stmt, query.limit, query.offset
-        )
+        houses, count = await self.get_pagination_data(stmt, query.limit, query.offset)
         return GetHouseResponseSchema(
             total=count,
             houses=[HouseResponseSchema.model_validate(house) for house in houses],
         )
 
-    async def get_attached_houses(self, query: GetAttachedHousesQuery) -> GetHouseResponseSchema:
-        stmt = select(House).where(
-            House.company_id == query.company_id
-        )
+    async def get_attached_houses(
+        self, query: GetAttachedHousesQuery
+    ) -> GetHouseResponseSchema:
+        stmt = select(House).where(House.company_id == query.company_id)
 
         stmt = self._get_search_stmt(stmt, query.search)
         stmt = stmt.order_by(House.id)
-        houses, count = await self.get_pagination_data(
-            stmt, query.limit, query.offset
-        )
+        houses, count = await self.get_pagination_data(stmt, query.limit, query.offset)
 
         return GetHouseResponseSchema(
             total=count,
@@ -76,8 +75,8 @@ class HouseQueryRepository(BaseRepository, IHouseQueryRepository):
         )
 
     async def get_houses(
-            self,
-            filters: GetHousesQuery,
+        self,
+        filters: GetHousesQuery,
     ) -> GetHouseResponseSchema:
         stmt = select(House)
 

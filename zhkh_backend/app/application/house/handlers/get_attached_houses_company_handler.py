@@ -16,7 +16,5 @@ class GetAttachedHousesToCompanyHandler(IRequestHandler[GetAttachedHousesQuery, 
     ):
         self._house_query_repository = house_query_repository
 
-    async def handle(
-            self, query: GetAttachedHousesQuery, _
-    ) -> GetHouseResponseSchema:
+    async def handle(self, query: GetAttachedHousesQuery, _) -> GetHouseResponseSchema:
         return await self._house_query_repository.get_attached_houses(query)

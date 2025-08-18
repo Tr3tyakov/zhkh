@@ -48,7 +48,6 @@ export const CompaniesPage = () => {
             usePageData.changeData(data.companies, data.total);
         } catch (e) {
             handleError(e, openSnackbar);
-
         } finally {
             setIsLoading(false);
         }

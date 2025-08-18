@@ -2,6 +2,7 @@ import asyncio
 import logging
 from datetime import datetime
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import (
@@ -17,10 +18,18 @@ from app.infrastructure.common.enums.user import (
 from app.infrastructure.orm.models import User
 from app.infrastructure.postgres import Database
 
-from sqlalchemy import select
+
 async def seed_user(session: AsyncSession):
     async with session.begin():
-        user =(await session.execute(select(User).where(User.email == "admin@service.ru"))).scalars().first()
+        user = (
+            (
+                await session.execute(
+                    select(User).where(User.email == "admin@service.ru")
+                )
+            )
+            .scalars()
+            .first()
+        )
         if user:
             return
 

@@ -25,7 +25,10 @@ export const CreateHouseFormHOC = (FormComponent: React.FC<any>) => {
         const { openSnackbar } = useEnqueueSnackbar();
         const [isLoading, setIsLoading] = useState(false);
 
-        const onSubmit = async (values: ICreateHouseData, helper: FormikHelpers<ICreateHouseData>) => {
+        const onSubmit = async (
+            values: ICreateHouseData,
+            helper: FormikHelpers<ICreateHouseData>
+        ) => {
             const description = `Создание жилого фонда`;
             setIsLoading(true);
             try {
@@ -39,7 +42,7 @@ export const CreateHouseFormHOC = (FormComponent: React.FC<any>) => {
                     description: description,
                     actionResult: 'Успешно',
                 });
-                helper.resetForm()
+                helper.resetForm();
             } catch (e) {
                 const message = getErrorMessage(e);
                 openSnackbar({

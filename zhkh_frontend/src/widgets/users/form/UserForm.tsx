@@ -16,14 +16,14 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const UserForm = <T extends IUserResponse>({
-                                                      initialValues,
-                                                      isLoading,
-                                                      title,
-                                                      onSubmit,
-                                                      isEdit,
-                                                      setupUser,
-                                                      userValidationSchema,
-                                                  }: IUserForm<T>) => {
+    initialValues,
+    isLoading,
+    title,
+    onSubmit,
+    isEdit,
+    setupUser,
+    userValidationSchema,
+}: IUserForm<T>) => {
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues,
@@ -37,7 +37,7 @@ export const UserForm = <T extends IUserResponse>({
         (user: IUserResponse | null) => {
             if (setupUser) setupUser(user as T);
         },
-        [setupUser],
+        [setupUser]
     );
 
     return (

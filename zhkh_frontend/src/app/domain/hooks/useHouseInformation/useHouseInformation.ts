@@ -29,7 +29,6 @@ export const useHouseTables = (house: IHouseResponse) => {
         house.building ? `, корп. ${house.building}` : ''
     }`;
 
-    console.log('Тип наружных стен', house.facadeWallType);
     const buildHomeInformationTable = (): ITableInformation[] => [
         { title: 'Адрес', value: address },
         { title: 'Год постройки', value: safe(house.commissioningYear) },

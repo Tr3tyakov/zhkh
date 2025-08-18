@@ -130,7 +130,9 @@ class BaseRepository(IBaseRepository):
 
         return stmt
 
-    def _integrate_filters(self, stmt: Select, filters: Optional[BaseFilter]=None) -> Select:
+    def _integrate_filters(
+        self, stmt: Select, filters: Optional[BaseFilter] = None
+    ) -> Select:
         if filters:
             filter_fields = filters.model_dump(
                 exclude_none=True, exclude={"limit", "offset"}

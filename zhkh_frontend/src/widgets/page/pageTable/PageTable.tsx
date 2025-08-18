@@ -92,4 +92,3 @@ export const PageTable = <T extends HasId, S extends IFilters>({
         </>
     );
 };
-

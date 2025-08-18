@@ -48,7 +48,7 @@ export const AuditLogsPage = () => {
 
     const usePageData = usePage<IAuditLogItem, IAuditLogFilters>(
         fetchLogs,
-        auditLogsInitialFilters,
+        auditLogsInitialFilters
     );
     const auditLogAPI = useInjection<IAuditLogAPI>(AuditLogAPIKey);
 
@@ -69,7 +69,7 @@ export const AuditLogsPage = () => {
                     const logTypeTranslated = translateEnum(log.logType, auditLogTranslations);
                     const entityTypeTranslated = translateEnum(
                         log.entityType,
-                        entityTypeTranslations,
+                        entityTypeTranslations
                     );
 
                     return (
@@ -86,7 +86,11 @@ export const AuditLogsPage = () => {
                             <BodyTableCell>
                                 <LogTooltip log={log}>
                                     <ButtonBase
-                                        onClick={() => log.logMetadata && log.logMetadata.length > 0 && copy(log.logMetadata)}
+                                        onClick={() =>
+                                            log.logMetadata &&
+                                            log.logMetadata.length > 0 &&
+                                            copy(log.logMetadata)
+                                        }
                                         sx={{ borderRadius: 50 }}
                                     >
                                         <InfoOutlineRoundedIcon />

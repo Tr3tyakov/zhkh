@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Button,
@@ -12,14 +12,14 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import {useReferenceBook} from '../hooks/useReferenceBooks/useReferenceBook.ts';
+import { useReferenceBook } from '../hooks/useReferenceBooks/useReferenceBook.ts';
 import AddIcon from '@mui/icons-material/Add';
 import useSidebar from '../hooks/useSidebar/useSidebar.ts';
-import {useInjection} from '../hooks/useInjection.ts';
-import {IReferenceBookAPI} from '../services/referenceBooks/referenceBookAPI.interfaces.ts';
-import {ReferenceBookAPIKey} from '../services/referenceBooks/key.ts';
-import {handleError} from '../../../shared/common/handlerError.ts';
-import {useEnqueueSnackbar} from '../hooks/useSnackbar/useEnqueueSnackbar.ts';
+import { useInjection } from '../hooks/useInjection.ts';
+import { IReferenceBookAPI } from '../services/referenceBooks/referenceBookAPI.interfaces.ts';
+import { ReferenceBookAPIKey } from '../services/referenceBooks/key.ts';
+import { handleError } from '../../../shared/common/handlerError.ts';
+import { useEnqueueSnackbar } from '../hooks/useSnackbar/useEnqueueSnackbar.ts';
 
 interface CustomSelectProps {
     label: string;
@@ -66,7 +66,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
         } finally {
             setIsLoading(false);
             handleClose();
-
         }
     };
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -75,7 +74,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
             save();
         }
     };
-
 
     return (
         <>
@@ -93,7 +91,11 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
                 onClick={() => !isEditing && setIsEditing(true)}
                 sx={{ cursor: isEditing ? 'text' : 'pointer' }}
             >
-                <Typography fontSize="14px" color={error ? theme.palette.error.main : 'gray'} mb={0.5}>
+                <Typography
+                    fontSize="14px"
+                    color={error ? theme.palette.error.main : 'gray'}
+                    mb={0.5}
+                >
                     {label}
                 </Typography>
 
@@ -139,9 +141,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
                 </Select>
             </Box>
             <Dialog open={isSidebarOpen} onClose={handleClose} fullWidth maxWidth="sm">
-                <DialogTitle>
-                    Добавить новое значение
-                </DialogTitle>
+                <DialogTitle>Добавить новое значение</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -161,6 +161,5 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, options
                 </DialogActions>
             </Dialog>
         </>
-
     );
 };

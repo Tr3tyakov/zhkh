@@ -10,7 +10,9 @@ from app.application.common.interfaces.behavior import IValidator
 from app.application.company.commands.create_company_command import CreateCompanyCommand
 from app.application.company.queries.get_companies_query import GetCompaniesQuery
 from app.application.house.queries.get_houses_query import GetHousesQuery
-from app.application.reference_book.queries.get_reference_books_query import GetReferenceBooksQuery
+from app.application.reference_book.queries.get_reference_books_query import (
+    GetReferenceBooksQuery,
+)
 from app.application.user.commands.change_account_status_command import (
     ChangeAccountStatusCommand,
 )
@@ -38,8 +40,8 @@ class ExistentUserByEmailValidator(IValidator):
     SUPPORTED = (AuthorizationCommand,)
 
     def __init__(
-            self,
-            user_repository: IUserRepository = Provide[IUserRepository],
+        self,
+        user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -66,8 +68,8 @@ class NonExistentUserByEmailValidator(IValidator):
     SUPPORTED = (RegistrationCommand,)
 
     def __init__(
-            self,
-            user_repository: IUserRepository = Provide[IUserRepository],
+        self,
+        user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -101,8 +103,8 @@ class ExistentUserByIdValidator(IValidator):
     )
 
     def __init__(
-            self,
-            user_repository: IUserRepository = Provide[IUserRepository],
+        self,
+        user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 
@@ -130,12 +132,12 @@ class ExistentUserNotBannedByIdValidator(IValidator):
         GetReferenceBooksQuery,
         GetUsersQuery,
         GetCompaniesQuery,
-        GetHousesQuery
+        GetHousesQuery,
     )
 
     def __init__(
-            self,
-            user_repository: IUserRepository = Provide[IUserRepository],
+        self,
+        user_repository: IUserRepository = Provide[IUserRepository],
     ):
         self._user_repository = user_repository
 

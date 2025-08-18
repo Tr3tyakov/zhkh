@@ -52,7 +52,11 @@ export const CurrentHouse = () => {
                         </Typography>
                     </Breadcrumbs>
                     <Box>
-                        <Button onClick={() => navigate(`/houses/edit-house/${data?.id}`)} variant="contained" size="small">
+                        <Button
+                            onClick={() => navigate(`/houses/edit-house/${data?.id}`)}
+                            variant="contained"
+                            size="small"
+                        >
                             Редактировать жилой фонд
                         </Button>
                     </Box>

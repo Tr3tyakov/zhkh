@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from app.infrastructure.orm.models.base import BaseModel
 from sqlalchemy import (
     Boolean,
     Column,
@@ -12,6 +11,8 @@ from sqlalchemy import (
     String,
     Text,
 )
+
+from app.infrastructure.orm.models.base import BaseModel
 
 
 class House(BaseModel):

@@ -2,6 +2,10 @@ from datetime import datetime
 from io import BytesIO
 from typing import List
 
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from openpyxl.utils import get_column_letter
+
 from app.application.common.interfaces.ceph import ICeph
 from app.application.common.interfaces.request import IRequestHandler
 from app.application.document_generation.commands.generate_excel_document_command import (
@@ -11,12 +15,10 @@ from app.application.document_generation.handlers.base import HouseDataMapper
 from app.application.house.schemas.house_fields_schema import HouseFieldSchema
 from app.config import settings
 from app.domain.common.interfaces.repositories.house_repository import IHouseRepository
-from app.domain.common.interfaces.repositories.reference_book_value_repository import \
-    IReferenceBookValueRepository
+from app.domain.common.interfaces.repositories.reference_book_value_repository import (
+    IReferenceBookValueRepository,
+)
 from app.infrastructure.containers.utils import Provide
-from openpyxl import Workbook
-from openpyxl.styles import Alignment
-from openpyxl.utils import get_column_letter
 
 
 class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand, None]):
@@ -24,8 +26,9 @@ class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand,
         self,
         ceph: ICeph = Provide[ICeph],
         house_repository: IHouseRepository = Provide[IHouseRepository],
-            reference_book_value_repository: IReferenceBookValueRepository = Provide[IReferenceBookValueRepository],
-
+        reference_book_value_repository: IReferenceBookValueRepository = Provide[
+            IReferenceBookValueRepository
+        ],
     ):
         self._ceph = ceph
         self._house_repository = house_repository
@@ -33,9 +36,7 @@ class GenerateExcelDocumentHandler(IRequestHandler[GenerateExcelDocumentCommand,
 
         self._data_mapper = HouseDataMapper(reference_book_value_repository)
 
-    async def handle(
-        self, command: GenerateExcelDocumentCommand, _
-    ) -> str:
+    async def handle(self, command: GenerateExcelDocumentCommand, _) -> str:
         excel_stream = await self._render_excel(command.fields)
 
         # Имя файла

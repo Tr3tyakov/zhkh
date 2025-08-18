@@ -108,7 +108,6 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
             });
         } catch (e) {
             handleError(e, openSnackbar);
-
         } finally {
             setIsLoading(false);
             setDialogOpen(false);
@@ -143,7 +142,8 @@ export const ReferenceBookEditor: React.FC<Props> = ({ referenceBookName }) => {
                             <MotionListItem
                                 {...defaultMotionConfig}
                                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                                key={value.id} divider
+                                key={value.id}
+                                divider
                             >
                                 <ListItemText primary={value.value} />
                                 <Box display="flex" gap="10px">

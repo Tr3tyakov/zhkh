@@ -146,6 +146,7 @@ class HouseBaseSchema(BaseSchema):
     class Config:
         json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y")}
 
+
 class HouseResponseSchema(HouseBaseSchema):
     id: int
     user_id: int

@@ -52,8 +52,7 @@ export const SignUp: React.FC<ISignUp> = ({ changeIsSignIn }) => {
                 formik.resetForm();
                 changeIsSignIn();
             } catch (e) {
-                    handleError(e, openSnackbar);
-
+                handleError(e, openSnackbar);
             } finally {
                 setIsLoading(false);
             }

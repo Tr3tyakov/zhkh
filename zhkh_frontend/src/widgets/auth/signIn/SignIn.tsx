@@ -1,21 +1,24 @@
-import {Box, Button, TextField, Typography} from '@mui/material';
-import {useFormik} from 'formik';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {ISignIn} from './signIn.interfaces.ts';
-import React, {useState} from 'react';
-import {useEnqueueSnackbar} from '../../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
-import {LoadingProgress} from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
-import {getErrorLog, getErrorMessage} from '../../../shared/api/base.ts';
-import {useNavigate} from 'react-router-dom';
-import {IAuthorizationData, IUserAPI,} from '../../../app/domain/services/users/userAPI.interfaces.ts';
-import {useInjection} from '../../../app/domain/hooks/useInjection.ts';
-import {UserAPIKey} from '../../../app/domain/services/users/key.ts';
-import {AuditLogAPIKey} from '../../../app/domain/services/auditLogs/key.ts';
-import {IAuditLogAPI} from '../../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
-import {AuditLogEnum, EntityTypeEnum} from '../../../app/infrastructures/enums/auditLog.ts';
-import {useUser} from '../../../app/domain/hooks/useUser/useUser.ts';
+import { ISignIn } from './signIn.interfaces.ts';
+import React, { useState } from 'react';
+import { useEnqueueSnackbar } from '../../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
+import { LoadingProgress } from '../../../shared/loading/loadingProgress/LoadingProgress.tsx';
+import { getErrorLog, getErrorMessage } from '../../../shared/api/base.ts';
+import { useNavigate } from 'react-router-dom';
+import {
+    IAuthorizationData,
+    IUserAPI,
+} from '../../../app/domain/services/users/userAPI.interfaces.ts';
+import { useInjection } from '../../../app/domain/hooks/useInjection.ts';
+import { UserAPIKey } from '../../../app/domain/services/users/key.ts';
+import { AuditLogAPIKey } from '../../../app/domain/services/auditLogs/key.ts';
+import { IAuditLogAPI } from '../../../app/domain/services/auditLogs/auditLogAPI.interfaces.ts';
+import { AuditLogEnum, EntityTypeEnum } from '../../../app/infrastructures/enums/auditLog.ts';
+import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
 import Icon from '../../../app/assets/icons/icon.png';
-import {useReferenceBook} from "../../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts";
+import { useReferenceBook } from '../../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
 
 export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,7 +27,7 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
     const navigate = useNavigate();
     const userAPI = useInjection<IUserAPI>(UserAPIKey);
     const auditLogAPI = useInjection<IAuditLogAPI>(AuditLogAPIKey);
-    const {fetchReferenceBooks} = useReferenceBook();
+    const { fetchReferenceBooks } = useReferenceBook();
 
     const formik = useFormik<IAuthorizationData>({
         initialValues: {
@@ -44,8 +47,8 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
                 });
                 const user = await userAPI.getUserInformation();
                 setupUser(user);
-                await fetchReferenceBooks()
-                console.log(1)
+                await fetchReferenceBooks();
+                console.log(1);
 
                 await auditLogAPI.createAuditLog({
                     userId,

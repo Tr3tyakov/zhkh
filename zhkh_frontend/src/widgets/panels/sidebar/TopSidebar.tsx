@@ -1,16 +1,9 @@
-import {
-    Box,
-    Container,
-    ListItemText,
-    Menu,
-    MenuItem,
-    Typography,
-} from '@mui/material';
+import { Box, Container, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { StyleListItemButton } from '../../../shared/styled/ListItemButton.tsx';
 import { useUser } from '../../../app/domain/hooks/useUser/useUser.ts';
 import { UserTypeEnum } from '../../../app/infrastructures/enums/user.ts';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AdminNavigation, DefaultUserNavigation } from './topSidebar.constants.tsx';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import './topSidebar.scss';
@@ -18,7 +11,6 @@ import { UserMenu } from './userMenu/UserMenu.tsx';
 import Icon from '../../../app/assets/icons/icon.png';
 import { motion } from 'framer-motion';
 import { defaultMotionConfig } from '../../../app/domain/motion/motionBox.ts';
-
 
 const MotionStyleListItemButton = motion.create(StyleListItemButton);
 
@@ -56,14 +48,20 @@ const TopSidebar: React.FC = () => {
             >
                 <Container maxWidth="lg">
                     <Box display="flex" alignItems="center" justifyContent="space-between">
-                        <Box p="10px" display="flex" justifyContent="center">
+                        <Box
+                            p="10px"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            gap="10px"
+                        >
                             <Box width="35px" component="img" src={Icon} />
+                            <Typography color="white">Управление жилым фондом</Typography>
                         </Box>
                         <UserMenu user={user} />
                     </Box>
                 </Container>
             </Box>
-
 
             {/* Меню */}
             <Box
@@ -145,7 +143,8 @@ const TopSidebar: React.FC = () => {
                                     disabled={item.disabled}
                                     onClick={() => navigate(item.path)}
                                     selected={location.pathname === item.path}
-                                    sx={{ px: 2 }}>
+                                    sx={{ px: 2 }}
+                                >
                                     <ListItemText>
                                         <Typography color="black" fontSize="14px">
                                             {item.text}

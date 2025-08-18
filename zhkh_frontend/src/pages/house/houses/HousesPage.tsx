@@ -49,7 +49,6 @@ export const HousesPage = () => {
             usePageData.changeData(data.houses, data.total);
         } catch (e) {
             handleError(e, openSnackbar);
-
         } finally {
             setIsLoading(false);
         }

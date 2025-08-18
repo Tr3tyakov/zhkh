@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {useEnqueueSnackbar} from '../../../domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
-import {useInjection} from '../../../domain/hooks/useInjection.ts';
+import React, { useEffect, useState } from 'react';
+import { useEnqueueSnackbar } from '../../../domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
+import { useInjection } from '../../../domain/hooks/useInjection.ts';
 import {
     IReferenceBookAPI,
     IReferenceBookList,
@@ -8,9 +8,9 @@ import {
     ReferenceBookIdToNameMap,
     ReferenceBookMap,
 } from '../../../domain/services/referenceBooks/referenceBookAPI.interfaces.ts';
-import {ReferenceBookAPIKey} from '../../../domain/services/referenceBooks/key.ts';
-import {ReferenceBookContext} from './referenceBookContext.ts';
-import {handleError} from '../../../../shared/common/handlerError.ts';
+import { ReferenceBookAPIKey } from '../../../domain/services/referenceBooks/key.ts';
+import { ReferenceBookContext } from './referenceBookContext.ts';
+import { handleError } from '../../../../shared/common/handlerError.ts';
 
 function buildReferenceBookMaps(books: IReferenceBookList[]) {
     const refMap: ReferenceBookMap = {};
@@ -59,4 +59,3 @@ export const ReferenceBookProvider: React.FC<{ children: React.ReactNode }> = ({
         </ReferenceBookContext.Provider>
     );
 };
-
