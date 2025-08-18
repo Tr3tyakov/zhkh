@@ -48,7 +48,6 @@ export const SignIn: React.FC<ISignIn> = ({ changeIsSignIn }) => {
                 const user = await userAPI.getUserInformation();
                 setupUser(user);
                 await fetchReferenceBooks();
-                console.log(1);
 
                 await auditLogAPI.createAuditLog({
                     userId,

@@ -32,7 +32,6 @@ export class CompanyAPI extends DefaultAPI implements ICompanyAPI {
             offset,
             ...(searchValue ? { search: searchValue } : {}),
         };
-        console.log(params, searchValue);
         const response = await this.API.get('/companies', {
             params,
             headers: { Authorization: this.bearer },

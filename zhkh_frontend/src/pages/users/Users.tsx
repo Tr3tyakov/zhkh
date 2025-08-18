@@ -238,7 +238,6 @@ export const UsersPage = () => {
                     ? 'Сделать администратором'
                     : 'Сделать пользователем',
             function: (user) => {
-                console.log(user);
                 handleUserType(user);
             },
             icon: (
