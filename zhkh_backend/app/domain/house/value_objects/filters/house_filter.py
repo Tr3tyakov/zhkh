@@ -78,7 +78,7 @@ class HouseFilter(BaseValueObjectSchema, PaginationSchema):
     hot_water_riser_material: Optional[StringField] = None
 
     sewerage_system_type: Optional[StringField] = None
-    sewerage_network_material: Optional[StringField] = None
+    sewerage_network_material: Optional[IntegerField] = None
 
     gas_system_type: Optional[StringField] = None
 

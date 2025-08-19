@@ -1,5 +1,4 @@
 from datetime import (
-    date,
     datetime,
 )
 from typing import Optional
@@ -15,6 +14,8 @@ class HouseBaseSchema(BaseSchema):
     street: Optional[str] = None
     house_number: Optional[str] = None
     building: Optional[str] = None
+    cadastral_number: Optional[str] = None
+    classifier_code: Optional[str] = None
 
     # --- Основные сведения ---
     commissioning_year: Optional[int] = None
@@ -85,7 +86,7 @@ class HouseBaseSchema(BaseSchema):
 
     # --- Система водоотведения ---
     sewerage_system_type: Optional[int] = None
-    sewerage_network_material: Optional[str] = None
+    sewerage_network_material: Optional[int] = None
 
     # --- Система газоснабжения ---
     gas_system_type: Optional[int] = None
@@ -111,25 +112,25 @@ class HouseBaseSchema(BaseSchema):
 
     # --- Система отопления ---
     heating_physical_wear: Optional[float] = None
-    heating_network_material: Optional[str] = None
-    heating_insulation_material: Optional[str] = None
+    heating_network_material: Optional[int] = None
+    heating_insulation_material: Optional[int] = None
 
     # --- Стояки системы отопления ---
-    heating_riser_layout_type: Optional[str] = None
-    heating_riser_material: Optional[str] = None
+    heating_riser_layout_type: Optional[int] = None
+    heating_riser_material: Optional[int] = None
     heating_riser_valve_wear: Optional[float] = None
 
     # --- Отопительные приборы ---
-    heating_device_type: Optional[str] = None
+    heating_device_type: Optional[int] = None
     heating_device_wear: Optional[float] = None
 
     # --- Система холодного водоснабжения ---
     cold_water_physical_wear: Optional[float] = None
-    cold_water_network_material: Optional[str] = None
+    cold_water_network_material: Optional[int] = None
 
     # --- Стояки системы холодного водоснабжения ---
     cold_water_riser_wear: Optional[float] = None
-    cold_water_riser_material: Optional[str] = None
+    cold_water_riser_material: Optional[int] = None
 
     # --- Запорная арматура системы холодного водоснабжения ---
     cold_water_valve_wear: Optional[float] = None
@@ -139,6 +140,7 @@ class HouseBaseSchema(BaseSchema):
 
     # --- Запорная арматура системы горячего водоснабжения ---
     hot_water_valve_wear: Optional[float] = None
+    water_system_valve_wear: Optional[float] = None
 
     # --- Примечание администратора ---
     note: Optional[str] = None

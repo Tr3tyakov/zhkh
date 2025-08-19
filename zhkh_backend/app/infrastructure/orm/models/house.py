@@ -33,6 +33,12 @@ class House(BaseModel):
     non_residential_units_count = Column(
         Integer, comment="Количество нежилых помещений"
     )
+    cadastral_number = Column(
+        String, comment="Кадастровый номер"
+    )
+    classifier_code = Column(
+        String, comment="Код ОКТМО"
+    )
 
     # --- Энергоэффективность ---
     energy_efficiency_class = Column(
@@ -168,7 +174,8 @@ class House(BaseModel):
         ForeignKey("reference_book_value.id"),
         comment="Тип системы водоотведения",
     )
-    sewerage_network_material = Column(String, comment="Материал сети водоотведения")
+    sewerage_network_material = Column(Integer, ForeignKey("reference_book_value.id"),
+                                       comment="Материал сети водоотведения")
 
     # --- Система газоснабжения ---
     gas_system_type = Column(
@@ -228,9 +235,11 @@ class House(BaseModel):
 
     # --- Система отопления ---
     heating_physical_wear = Column(Float, comment="Физический износ системы отопления")
-    heating_network_material = Column(String, comment="Материал сети отопления")
+    heating_network_material = Column(        Integer,
+        ForeignKey("reference_book_value.id"), comment="Материал сети отопления")
     heating_insulation_material = Column(
-        String, comment="Материал теплоизоляции сети отопления"
+        Integer,
+        ForeignKey("reference_book_value.id"), comment="Материал теплоизоляции сети отопления"
     )
 
     # --- Стояки системы отопления ---
@@ -239,7 +248,8 @@ class House(BaseModel):
         ForeignKey("reference_book_value.id"),
         comment="Тип разводки стояков отопления",
     )
-    heating_riser_material = Column(String, comment="Материал стояков отопления")
+    heating_riser_material = Column(        Integer,
+        ForeignKey("reference_book_value.id"), comment="Материал стояков отопления")
     heating_riser_valve_wear = Column(
         Float, comment="Физический износ запорной арматуры отопления"
     )
@@ -256,11 +266,13 @@ class House(BaseModel):
 
     # --- Система холодного водоснабжения ---
     cold_water_physical_wear = Column(Float, comment="Физический износ системы ХВС")
-    cold_water_network_material = Column(String, comment="Материал сети ХВС")
+    cold_water_network_material = Column(        Integer,
+        ForeignKey("reference_book_value.id"), comment="Материал сети ХВС")
 
     # --- Стояки системы холодного водоснабжения ---
     cold_water_riser_wear = Column(Float, comment="Физический износ стояков ХВС")
-    cold_water_riser_material = Column(String, comment="Материал стояков ХВС")
+    cold_water_riser_material = Column(        Integer,
+        ForeignKey("reference_book_value.id"), comment="Материал стояков ХВС")
 
     # --- Запорная арматура системы холодного водоснабжения ---
     cold_water_valve_wear = Column(
@@ -273,6 +285,10 @@ class House(BaseModel):
     # --- Запорная арматура системы горячего водоснабжения ---
     hot_water_valve_wear = Column(
         Float, comment="Физический износ запорной арматуры ГВС"
+    )
+    # --- Запорная арматура системы отопления ---
+    water_system_valve_wear = Column(
+        Float, comment="Физический износ запорной арматуры системы отопления"
     )
 
     # --- Примечание администратора ---
