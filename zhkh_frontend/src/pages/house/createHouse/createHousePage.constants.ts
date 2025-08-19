@@ -10,10 +10,6 @@ const floors = [
     { name: 'entrancesCount', label: 'Количество подъездов' },
     { name: 'maxFloorsCount', label: 'Наибольшее количество этажей' },
     { name: 'minFloorsCount', label: 'Наименьшее количество этажей' },
-    {
-        name: 'undergroundFloorsCount',
-        label: 'Количество подземных этажей',
-    },
 ];
 
 const squares = [

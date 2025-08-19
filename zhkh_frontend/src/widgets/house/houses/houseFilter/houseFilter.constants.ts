@@ -20,7 +20,7 @@ export const refNameToFilterField: Record<string, keyof IHouseFiltersState> = {
     Теплоснабжение: 'heating',
     'Холодное водоснабжение': 'coldWaterSupply',
     Электроснабжение: 'electricitySupply',
-    'Несущие стены': 'loadBearingWalls', // может дублировать с Материал несущих стен, уточни
+    'Несущие стены': 'loadBearingWalls',
     'Тип системы горячего водоснабжения': 'hotWaterSystemType',
     'Материал сети': 'hotWaterNetworkMaterial',
     'Материал теплоизоляции сети': 'hotWaterInsulationMaterial',

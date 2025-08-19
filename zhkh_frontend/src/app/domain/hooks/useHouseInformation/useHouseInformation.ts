@@ -1,6 +1,11 @@
 import { useReferenceBook } from '../useReferenceBooks/useReferenceBook.ts';
 import { IHouseResponse } from '../../services/houses/houseAPI.interfaces.ts';
 import { ITableInformation } from '../../../../shared/tables/informationTable.interfaces.ts';
+import { useInjection } from '../useInjection.ts';
+import { ICompanyAPI } from '../../services/companies/companyAPI.interfaces.ts';
+import { CompanyAPIKey } from '../../services/companies/key.ts';
+import { useEffect, useState } from 'react';
+import { ICompanyInformation } from '../../../../widgets/company/companyInformation.interfaces.ts';
 
 const safe = (value: unknown): string => {
     return value === null || value === undefined || value === '' ? '—' : String(value);
@@ -13,7 +18,7 @@ const safeBool = (value: boolean | null | undefined): string => {
 const resolveRefValue = (
     referenceBooks: ReturnType<typeof useReferenceBook>['referenceBooks'],
     name: string,
-    id: number | null | undefined
+    id: number | null | undefined,
 ): string => {
     if (!id || !referenceBooks?.[name]) return '—';
     return referenceBooks[name].find((val) => val.id === id)?.value ?? '—';
@@ -21,6 +26,21 @@ const resolveRefValue = (
 
 export const useHouseTables = (house: IHouseResponse) => {
     const { referenceBooks } = useReferenceBook();
+    const companyAPI = useInjection<ICompanyAPI>(CompanyAPIKey);
+    const [companyName, setCompanyName] = useState<string | null>(null);
+
+    const getCompanyName = async () => {
+        if (!house.companyId) return;
+        try {
+            const data = await companyAPI.getCompany(+house.companyId);
+            setCompanyName(data.name);
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    useEffect(() => {
+        getCompanyName();
+    }, []);
 
     const getRef = (name: string, id: number | null | undefined) =>
         resolveRefValue(referenceBooks, name, id);
@@ -34,10 +54,7 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Год постройки', value: safe(house.commissioningYear) },
         {
             title: 'Количество этажей',
-            value:
-                house.minFloorsCount && house.maxFloorsCount
-                    ? `${house.minFloorsCount}–${house.maxFloorsCount}`
-                    : '—',
+            value: house.maxFloorsCount,
         },
         { title: 'Тип дома', value: getRef('Тип дома', house.houseType) },
         { title: 'Жилых помещений', value: safe(house.apartmentsCount) },
@@ -51,12 +68,14 @@ export const useHouseTables = (house: IHouseResponse) => {
         },
         { title: 'Тип перекрытий', value: getRef('Тип перекрытий', house.overlapType) },
         {
-            title: 'Материал несущих стен',
-            value: getRef('Материал несущих стен', house.loadBearingWalls),
+            title: 'Несущие стены',
+            value: getRef('Несущие стены', house.loadBearingWalls),
         },
         { title: 'Тип мусоропровода', value: getRef('Тип мусоропровода', house.garbageChuteType) },
         { title: 'Дом признан аварийным', value: safeBool(house.isEmergency) },
-        { title: 'Управляющая компания', value: '—' },
+        { title: 'Кадастровый номер', value: safe(house.cadastralNumber) },
+        { title: 'Код ОКТМО', value: safe(house.classifierCode) },
+        { title: 'Управляющая компания', value: safe(companyName) },
     ];
 
     const buildGeneralInformationTable = (): ITableInformation[] => [
@@ -64,30 +83,38 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Дом признан аварийным', value: safeBool(house.isEmergency) },
         { title: 'Состояние дома', value: safe(house.condition) },
         { title: 'Количество квартир', value: safe(house.apartmentsCount) },
+        { title: 'Колчество нежелых помещений', value: safe(house.nonResidentialUnitsCount) },
         {
             title: 'Класс энергетической эффективности',
             value: getRef('Класс энергетической эффективности', house.energyEfficiencyClass),
         },
-        { title: 'Дата энергетического обследования', value: safe(house.energySurveyDate) },
+        {
+            title: 'Дата проведения энергетического обследования',
+            value: safe(house.energySurveyDate),
+        },
         { title: 'Количество подъездов', value: safe(house.entrancesCount) },
         { title: 'Наибольшее количество этажей', value: safe(house.maxFloorsCount) },
-        { title: 'Подземных этажей', value: safe(house.undergroundFloorsCount) },
+        { title: 'Наименьшее количество этажей', value: safe(house.minFloorsCount) },
         { title: 'Формирование фонда кап. ремонта', value: safe(house.capitalRepairFund) },
         { title: 'Площадь парковки м²', value: safe(house.parkingArea) },
         {
             title: 'Приспособления для МГН',
             value: getRef(
                 'Наличие в подъездах приспособлений для нужд маломобильных групп населения',
-                house.hasAccessibility
+                house.hasAccessibility,
             ),
         },
+        {
+            title: 'Тип дома',
+            value: getRef('Тип дома', house.houseType),
+        },
         { title: 'Износ здания, %', value: safe(house.buildingWearPercent) },
-        { title: 'Дата износа', value: safe(house.buildingWearDate) },
-        { title: 'Площадь МКД, кв.м', value: safe(house.totalArea) },
-        { title: 'Жилая площадь, м²', value: safe(house.residentialArea) },
-        { title: 'Нежилая площадь, м²', value: safe(house.nonResidentialArea) },
-        { title: 'Общая площадь имущества, м²', value: safe(house.commonPropertyArea) },
-        { title: 'Площадь земли, м²', value: safe(house.landArea) },
+        { title: 'Дата, на которую установлен износ здания', value: safe(house.buildingWearDate) },
+        { title: 'Площадь многоквартирного дома, кв.м', value: safe(house.totalArea) },
+        { title: 'Площадь жилых помещений, м²', value: safe(house.residentialArea) },
+        { title: 'Площадь нежелых помещений, м²', value: safe(house.nonResidentialArea) },
+        { title: 'Площадь помещений общего имущества, м²', value: safe(house.commonPropertyArea) },
+        { title: 'Площадь зем. участка общего имущества, м²', value: safe(house.landArea) },
         {
             title: 'Серия, тип постройки',
             value: getRef('Серия, тип постройки', house.buildingSeries),
@@ -100,37 +127,82 @@ export const useHouseTables = (house: IHouseResponse) => {
 
     const buildEngineeringSystemsTable = (): ITableInformation[] => [
         { title: 'Вентиляция', value: getRef('Вентиляция', house.ventilation) },
-        {
-            title: 'Система пожаротушения',
-            value: getRef('Система пожаротушения', house.fireSuppression),
-        },
         { title: 'Водоотведение', value: getRef('Водоотведение', house.sewerage) },
-        { title: 'Теплоснабжение', value: getRef('Теплоснабжение', house.heating) },
         { title: 'Система водостоков', value: getRef('Система водостоков', house.drainageSystem) },
-        {
-            title: 'Холодное водоснабжение',
-            value: getRef('Холодное водоснабжение', house.coldWaterSupply),
-        },
         { title: 'Газоснабжение', value: getRef('Газоснабжение', house.gasSupply) },
-        { title: 'Электроснабжение', value: getRef('Электроснабжение', house.electricitySupply) },
         {
             title: 'Горячее водоснабжение',
             value: getRef('Горячее водоснабжение', house.hotWaterSupply),
         },
-        { title: 'Количество вводов', value: safe(house.numberOfInputs) },
+        {
+            title: 'Система пожаротушения',
+            value: getRef('Система пожаротушения', house.fireSuppression),
+        },
+        { title: 'Теплоснабжение', value: getRef('Теплоснабжение', house.heating) },
+        {
+            title: 'Холодное водоснабжение',
+            value: getRef('Холодное водоснабжение', house.coldWaterSupply),
+        },
+        { title: 'Электроснабжение', value: getRef('Электроснабжение', house.electricitySupply) },
+        { title: 'Количество вводов в дом, ед.', value: safe(house.numberOfInputs) },
     ];
 
     const buildStructuralElementsTable = (): ITableInformation[] => [
         { title: 'Мусоропровод', value: safeBool(house.garbageChute) },
-        { title: 'Перекрытия', value: getRef('Тип перекрытий', house.overlapType) },
         { title: 'Несущие стены', value: getRef('Несущие стены', house.loadBearingWalls) },
         { title: 'Площадь подвала, кв.м', value: safe(house.basementArea) },
+        { title: 'Фундамент', value: getRef('Тип фундамента', house.foundationType) },
+        { title: 'Перекрытия', value: getRef('Тип перекрытий', house.overlapType) },
+    ];
+
+    const buildHotWaterSupplyTable = (): ITableInformation[] => [
+        {
+            title: 'Тип системы горячего водоснабжения',
+            value: getRef('Тип системы горячего водоснабжения', house.hotWaterSystemType),
+        },
+        {
+            title: 'Материал сети',
+            value: getRef('Материал сети', house.hotWaterNetworkMaterial),
+        },
+        {
+            title: 'Материал теплоизоляции сети',
+            value: getRef('Материал сети', house.hotWaterInsulationMaterial),
+        },
+        {
+            title: 'Материал стояков',
+            value: getRef('Материал стояков', house.hotWaterRiserMaterial),
+        },
+    ];
+    const buildSewerageTable = (): ITableInformation[] => [
+        {
+            title: 'Тип системы водоотведения',
+            value: getRef('Тип системы водоотведения', house.sewerageSystemType),
+        },
+        { title: 'Материал сети', value: getRef('Материал сети', house.sewerageNetworkMaterial) },
+    ];
+    const buildGasSystemTable = (): ITableInformation[] => [
+        {
+            title: 'Тип системы газоснабжения',
+            value: getRef('Тип системы газоснабжения', house.gasSystemType),
+        },
+    ];
+
+    const buildElectricSystemTable = (): ITableInformation[] => [
+        { title: 'Количество вводов системы электроснабжения', value: safe(house.numberOfInputs) },
+    ];
+    const buildFundamentTable = (): ITableInformation[] => [
+        { title: 'Фундамент', value: getRef('Тип фундамента', house.foundationType) },
         {
             title: 'Материал фундамента',
             value: getRef('Материал фундамента', house.foundationMaterial),
         },
-        { title: 'Тип фундамента', value: getRef('Тип фундамента', house.foundationType) },
         { title: 'Площадь отмостки', value: safe(house.blindArea) },
+    ];
+    const buildInnerWall = (): ITableInformation[] => [
+        {
+            title: 'Тип внутренних стен',
+            value: getRef('Тип внутренних стен', house.internalWallsType),
+        },
     ];
 
     const buildFacadeTable = (): ITableInformation[] => [
@@ -143,7 +215,13 @@ export const useHouseTables = (house: IHouseResponse) => {
             title: 'Материал отделки фасада',
             value: getRef('Материал отделки фасада', house.facadeFinishingMaterial),
         },
-        { title: 'Год кап. ремонта фасада', value: safe(house.facadeLastMajorRepairYear) },
+        {
+            title: 'Год проведения последнего капитального ремонта',
+            value: safe(house.facadeLastMajorRepairYear),
+        },
+    ];
+    const buildOverlapTable = (): ITableInformation[] => [
+        { title: 'Тип перекрытия', value: getRef('Тип перекрытий', house.overlapType) },
     ];
 
     const buildRoofTable = (): ITableInformation[] => [
@@ -157,14 +235,63 @@ export const useHouseTables = (house: IHouseResponse) => {
             value: getRef('Вид несущей части', house.roofSupportStructureType),
         },
         { title: 'Тип кровли', value: getRef('Тип кровли', house.roofCoveringType) },
-        { title: 'Год капремонта кровли', value: safe(house.roofLastMajorRepairYear) },
+        {
+            title: 'Год проведения последнего капитального ремонта кровли',
+            value: safe(house.roofLastMajorRepairYear),
+        },
+    ];
+
+    const buildWindowTable = (): ITableInformation[] => [
+        { title: 'Материал окон', value: getRef('Материал окон', house.windowMaterial) },
+    ];
+
+    const buildHeatingTable = (): ITableInformation[] => [
+        { title: 'Материал сети', value: getRef('Материал сети', house.heatingNetworkMaterial) },
+        {
+            title: 'Материал теплоизоляции сети',
+            value: getRef('Материал сети', house.heatingInsulationMaterial),
+        },
+    ];
+    const buildHeatingSystemRisersTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.heatingRiserValveWear) },
+        {
+            title: 'Тип поквартирной разводки внутридомовой системы отопления',
+            value: getRef(
+                'Тип поквартирной разводки внутридомовой системы отопления',
+                house.heatingRiserLayoutType,
+            ),
+        },
+        { title: 'Материал', value: getRef('Материал стояков', house.heatingRiserMaterial) },
+    ];
+    const buildWaterSystemWearTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.waterSystemValveWear) },
+    ];
+    const buildColdWaterSystemWearTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.coldWaterValveWear) },
+    ];
+    const buildHotWaterSystemWearTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.hotWaterValveWear) },
+    ];
+
+    const buildHeatingDevices = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.heatingDeviceWear) },
+        { title: 'Тип отопительных приборов', value: getRef("Тип отопительных приборов",house.heatingDeviceType) },
+    ];
+    const buildColdWaterSystemTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.coldWaterPhysicalWear) },
+        {
+            title: 'Материал сети',
+            value: getRef('Материал сети', house.coldWaterNetworkMaterial),
+        },
+    ];
+    const buildColdWaterSystemRiserTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.coldWaterRiserWear) },
+        { title: 'Материал сети', value: getRef('Материал сети', house.coldWaterRiserMaterial) },
+    ];
+    const buildHotWaterSystemRiserTable = (): ITableInformation[] => [
+        { title: 'Физический износ', value: safe(house.hotWaterRiserWear) },
     ];
     const buildAdditionalInfoTable = (): ITableInformation[] => [
-        { title: 'Материал окон', value: getRef('Материал окон', house.windowMaterial) },
-        {
-            title: 'Тип внутренних стен',
-            value: getRef('Тип внутренних стен', house.internalWallsType),
-        },
         { title: 'Примечание администратора', value: safe(house.note) },
     ];
 
@@ -184,5 +311,22 @@ export const useHouseTables = (house: IHouseResponse) => {
         buildRoofTable,
         buildAdditionalInfoTable,
         formatHouseAddress,
+        buildHotWaterSupplyTable,
+        buildSewerageTable,
+        buildGasSystemTable,
+        buildElectricSystemTable,
+        buildFundamentTable,
+        buildInnerWall,
+        buildOverlapTable,
+        buildWindowTable,
+        buildHeatingTable,
+        buildHeatingSystemRisersTable,
+        buildWaterSystemWearTable,
+        buildHeatingDevices,
+        buildColdWaterSystemTable,
+        buildColdWaterSystemRiserTable,
+        buildHotWaterSystemRiserTable,
+        buildHotWaterSystemWearTable,
+        buildColdWaterSystemWearTable,
     };
 };

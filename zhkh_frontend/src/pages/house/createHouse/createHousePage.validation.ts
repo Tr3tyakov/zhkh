@@ -7,6 +7,8 @@ const createHouseInitialValues: ICreateHouseData = {
     street: '',
     houseNumber: '',
     building: '',
+    cadastralNumber: '',
+    classifierCode: '',
 
     commissioningYear: undefined,
     isEmergency: false,
@@ -122,6 +124,62 @@ const createHouseInitialValues: ICreateHouseData = {
     note: '',
 };
 const validationSchema = Yup.object({
+    cadastralNumber: Yup.string()
+        .matches(
+            /^\d{2}:\d{2}:\d{6,7}:\d+$/,
+            'Кадастровый номер должен быть в формате XX:XX:XXXXXX:XXX',
+        )
+        .nullable()
+        .test(
+            'cadastral-format',
+            'Неверный формат кадастрового номера',
+            (value) => {
+                if (!value) return true; // разрешаем пустое значение
+
+                const parts = value.split(':');
+                if (parts.length !== 4) return false;
+
+                // Проверяем каждую часть
+                const [district, area, quarter, number] = parts;
+
+                // Район (2 цифры)
+                if (!/^\d{2}$/.test(district)) return false;
+
+                // Округ/район (2 цифры)
+                if (!/^\d{2}$/.test(area)) return false;
+
+                // Квартал (6-7 цифр)
+                if (!/^\d{6,7}$/.test(quarter)) return false;
+
+                // Номер участка (1+ цифр)
+                if (!/^\d+$/.test(number)) return false;
+
+                return true;
+            },
+        ),
+
+    classifierCode: Yup.string()
+        .matches(
+            /^\d{8,11}$/,
+            'Код ОКТМО должен содержать от 8 до 11 цифр',
+        )
+        .nullable()
+        .test(
+            'oktmo-length',
+            'Код ОКТМО должен содержать от 8 до 11 цифр',
+            (value) => {
+                if (!value) return true; // разрешаем пустое значение
+                return value.length >= 8 && value.length <= 11;
+            },
+        )
+        .test(
+            'oktmo-digits',
+            'Код ОКТМО должен содержать только цифры',
+            (value) => {
+                if (!value) return true;
+                return /^\d+$/.test(value);
+            },
+        ),
     commissioningYear: Yup.number()
         .min(1800, 'Год не может быть меньше 1800')
         .max(new Date().getFullYear(), 'Год не может быть больше текущего')
@@ -152,11 +210,6 @@ const validationSchema = Yup.object({
         .min(0, 'Минимальное количество этажей не может быть меньше 0')
         .nullable()
         .typeError('Введите корректное значение минимального количества этажей'),
-
-    undergroundFloorsCount: Yup.number()
-        .min(0, 'Количество подземных этажей не может быть меньше 0')
-        .nullable()
-        .typeError('Введите корректное количество подземных этажей'),
 
     parkingArea: Yup.number()
         .min(0, 'Площадь парковки не может быть меньше 0')

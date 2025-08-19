@@ -45,100 +45,98 @@ export const AuditLogsPageFilter: React.FC<AuditLogsPageFilterProps> = ({
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-            <Box display="flex" gap={2} mt={2} mb={2} flexWrap="wrap" alignItems="center">
-                <TextField
-                    label={label}
-                    variant="outlined"
-                    value={filters.searchValue || ''}
-                    onChange={onSearchChange}
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <LoadingProgress isLoading={isLoading} />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Autocomplete
-                    sx={{ flex: 1 }}
-                    options={auditLogOptions}
-                    getOptionLabel={(option) => option.label}
-                    value={
-                        auditLogOptions.find((opt) => opt.value === filters.logType) ??
-                        auditLogOptions[0]
-                    }
-                    onChange={(_, newValue) => {
-                        setFilters((prev) => ({
-                            ...prev,
-                            logType: (newValue?.value as AuditLogEnum) || '',
-                        }));
-                        handlePageChange(1);
-                    }}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Тип события"
-                            variant="outlined"
-                            sx={{ minWidth: 230 }}
-                        />
-                    )}
-                    clearOnEscape
-                    isOptionEqualToValue={(option, value) => option.value === value.value}
-                />
-                <Autocomplete
-                    sx={{ flex: 1 }}
-                    options={entityTypeOptions}
-                    getOptionLabel={(option) => option.label}
-                    value={
-                        entityTypeOptions.find((opt) => opt.value === filters.entityType) ??
-                        entityTypeOptions[0]
-                    }
-                    onChange={(_, newValue) => {
-                        setFilters((prev) => ({
-                            ...prev,
-                            entityType: (newValue?.value as EntityTypeEnum) || '',
-                        }));
-                        handlePageChange(1);
-                    }}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Сущность"
-                            variant="outlined"
-                            sx={{ minWidth: 230 }}
-                        />
-                    )}
-                    clearOnEscape
-                    isOptionEqualToValue={(option, value) => option.value === value.value}
-                />
-                <DatePicker
-                    sx={{ width: '100%' }}
-                    label="Дата начала"
-                    value={filters.startDatetime ? dayjs(filters.startDatetime) : null}
-                    onChange={onStartDateChange}
-                    slotProps={{ textField: { variant: 'outlined', sx: { width: 200 } } }}
-                    maxDate={filters.endDatetime ? dayjs(filters.endDatetime) : undefined}
-                />
+        <Box display="flex" gap={2} mt={2} mb={2} flexWrap="wrap" alignItems="center">
+            <TextField
+                label={label}
+                variant="outlined"
+                value={filters.searchValue || ''}
+                onChange={onSearchChange}
+                fullWidth
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <LoadingProgress isLoading={isLoading} />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            <Autocomplete
+                sx={{ flex: 1 }}
+                options={auditLogOptions}
+                getOptionLabel={(option) => option.label}
+                value={
+                    auditLogOptions.find((opt) => opt.value === filters.logType) ??
+                    auditLogOptions[0]
+                }
+                onChange={(_, newValue) => {
+                    setFilters((prev) => ({
+                        ...prev,
+                        logType: (newValue?.value as AuditLogEnum) || '',
+                    }));
+                    handlePageChange(1);
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Тип события"
+                        variant="outlined"
+                        sx={{ minWidth: 230 }}
+                    />
+                )}
+                clearOnEscape
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+            />
+            <Autocomplete
+                sx={{ flex: 1 }}
+                options={entityTypeOptions}
+                getOptionLabel={(option) => option.label}
+                value={
+                    entityTypeOptions.find((opt) => opt.value === filters.entityType) ??
+                    entityTypeOptions[0]
+                }
+                onChange={(_, newValue) => {
+                    setFilters((prev) => ({
+                        ...prev,
+                        entityType: (newValue?.value as EntityTypeEnum) || '',
+                    }));
+                    handlePageChange(1);
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Сущность"
+                        variant="outlined"
+                        sx={{ minWidth: 230 }}
+                    />
+                )}
+                clearOnEscape
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+            />
+            <DatePicker
+                sx={{ width: '100%' }}
+                label="Дата начала"
+                value={filters.startDatetime ? dayjs(filters.startDatetime) : null}
+                onChange={onStartDateChange}
+                slotProps={{ textField: { variant: 'outlined', sx: { width: 200 } } }}
+                maxDate={filters.endDatetime ? dayjs(filters.endDatetime) : undefined}
+            />
 
-                <DatePicker
-                    sx={{ width: '100%' }}
-                    label="Дата конца"
-                    value={filters.endDatetime ? dayjs(filters.endDatetime) : null}
-                    onChange={onEndDateChange}
-                    slotProps={{ textField: { variant: 'outlined', sx: { width: 200 } } }}
-                    minDate={filters.startDatetime ? dayjs(filters.startDatetime) : undefined}
-                />
-                <TextField
-                    sx={{ flex: 1 }}
-                    label="ID пользователя"
-                    variant="outlined"
-                    type="number"
-                    value={filters.findUserId ?? ''}
-                    onChange={onUserIdChange}
-                />
-            </Box>
-        </LocalizationProvider>
+            <DatePicker
+                sx={{ width: '100%' }}
+                label="Дата конца"
+                value={filters.endDatetime ? dayjs(filters.endDatetime) : null}
+                onChange={onEndDateChange}
+                slotProps={{ textField: { variant: 'outlined', sx: { width: 200 } } }}
+                minDate={filters.startDatetime ? dayjs(filters.startDatetime) : undefined}
+            />
+            <TextField
+                sx={{ flex: 1 }}
+                label="ID пользователя"
+                variant="outlined"
+                type="number"
+                value={filters.findUserId ?? ''}
+                onChange={onUserIdChange}
+            />
+        </Box>
     );
 };

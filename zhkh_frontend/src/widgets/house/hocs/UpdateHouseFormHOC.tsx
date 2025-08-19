@@ -32,6 +32,7 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
             try {
                 setIsLoading(true);
                 const data = await houseAPI.getHouseInformation(Number(id));
+                console.log(data)
                 setInitialValues(data);
             } catch (e) {
                 handleError(e, openSnackbar);
@@ -53,7 +54,7 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
             setIsLoading(true);
             try {
                 const data = trimObjectStrings(values);
-                await houseAPI.updateHouse(Number(id), data);
+                await houseAPI.updateHouse(Number(id), { ...data, companyId: initialValues?.companyId });
                 await Promise.all([
                     updateState(),
                     auditLogAPI.createAuditLog({

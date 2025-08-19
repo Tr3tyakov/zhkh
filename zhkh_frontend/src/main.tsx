@@ -10,6 +10,9 @@ import { UserProvider } from './app/infrastructures/providers/userProvider/UserP
 import { SnackbarCloseButton } from './app/domain/hooks/useSnackbar/useEnqueueSnackbar.tsx';
 import { setupContainer } from './app/infrastructures/container/container.ts';
 import { ReferenceBookProvider } from './app/infrastructures/providers/referenceBookProvider/ReferenceBookProvider.tsx';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { ruRU } from '@mui/x-date-pickers/locales';
 
 setupContainer();
 
@@ -27,9 +30,15 @@ createRoot(document.getElementById('root')!).render(
         >
             <BrowserRouter>
                 <UserProvider>
-                    <ReferenceBookProvider>
-                        <App />
-                    </ReferenceBookProvider>
+                    <LocalizationProvider
+                        dateAdapter={AdapterDayjs}
+                        adapterLocale="ru"
+                        localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}
+                    >
+                        <ReferenceBookProvider>
+                            <App />
+                        </ReferenceBookProvider>
+                    </LocalizationProvider>
                 </UserProvider>
             </BrowserRouter>
         </SnackbarProvider>

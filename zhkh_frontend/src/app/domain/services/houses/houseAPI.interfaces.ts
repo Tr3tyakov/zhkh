@@ -8,6 +8,8 @@ interface IHouse {
     street?: string;
     houseNumber?: string;
     building?: string;
+    cadastralNumber?: string
+    classifierCode?: string
 
     // Основные сведения
     commissioningYear?: number;
@@ -73,18 +75,18 @@ interface IHouse {
     overlapType?: number;
 
     // --- Система горячего водоснабжения ---
-    hotWaterSystemType?: string;
+    hotWaterSystemType?: number;
     hotWaterPhysicalWear?: number;
-    hotWaterNetworkMaterial?: string;
-    hotWaterInsulationMaterial?: string;
-    hotWaterRiserMaterial?: string;
+    hotWaterNetworkMaterial?: number;
+    hotWaterInsulationMaterial?: number;
+    hotWaterRiserMaterial?: number;
 
     // --- Система водоотведения ---
-    sewerageSystemType?: string;
-    sewerageNetworkMaterial?: string;
+    sewerageSystemType?: number;
+    sewerageNetworkMaterial?: number;
 
     // --- Система газоснабжения ---
-    gasSystemType?: string;
+    gasSystemType?: number;
 
     // --- Внутренние стены ---
     internalWallsType?: number;
@@ -107,25 +109,25 @@ interface IHouse {
 
     // --- Система отопления ---
     heatingPhysicalWear?: number;
-    heatingNetworkMaterial?: string;
-    heatingInsulationMaterial?: string;
+    heatingNetworkMaterial?: number;
+    heatingInsulationMaterial?: number;
 
     // --- Стояки системы отопления ---
-    heatingRiserLayoutType?: string;
-    heatingRiserMaterial?: string;
+    heatingRiserLayoutType?: number;
+    heatingRiserMaterial?: number;
     heatingRiserValveWear?: number;
 
     // --- Отопительные приборы ---
-    heatingDeviceType?: string;
+    heatingDeviceType?: number;
     heatingDeviceWear?: number;
 
     // --- Система холодного водоснабжения ---
     coldWaterPhysicalWear?: number;
-    coldWaterNetworkMaterial?: string;
+    coldWaterNetworkMaterial?: number;
 
     // --- Стояки системы холодного водоснабжения ---
     coldWaterRiserWear?: number;
-    coldWaterRiserMaterial?: string;
+    coldWaterRiserMaterial?: number;
 
     // --- Запорная арматура системы холодного водоснабжения ---
     coldWaterValveWear?: number;
@@ -135,6 +137,7 @@ interface IHouse {
 
     // --- Запорная арматура системы горячего водоснабжения ---
     hotWaterValveWear?: number;
+    waterSystemValveWear?: number;
 
     // --- Примечание ---
     note?: string;

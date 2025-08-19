@@ -9,22 +9,20 @@ import { IHouseForm } from './createHouse/createHousePage.interfaces';
 import { address, floors, squares } from './createHouse/createHousePage.constants';
 import { CustomSelect } from '../../app/domain/components/CustomSelect';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
-import { useNavigate } from 'react-router-dom';
 
 export const HouseForm: React.FC<IHouseForm> = ({
-    id,
-    initialValues,
-    isLoading,
-    onSubmit,
-    title,
-}) => {
+                                                    id,
+                                                    initialValues,
+                                                    isLoading,
+                                                    onSubmit,
+                                                    title,
+                                                }) => {
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit,
         enableReinitialize: true,
     });
-    const navigate = useNavigate();
     const { referenceBooks } = useReferenceBook();
 
     const handleCheckbox = (name: string) => (
@@ -32,7 +30,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
             control={
                 <Checkbox
                     id={name}
-                    checked={Boolean(formik.values[name])} // <-- важно
+                    checked={Boolean(formik.values[name])}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     color="primary"
@@ -49,7 +47,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
 
     const renderFields = (
         fields: { name: string; label: string; type?: string; mask?: string }[],
-        width = 400
+        width = 430,
     ) =>
         fields.map(({ name, label, type }) => (
             <FieldGroup
@@ -63,7 +61,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
         ));
 
     const renderReferenceFields = (
-        fields: { name: string; label: string; referenceKey?: string }[]
+        fields: { name: string; label: string; referenceKey?: string }[],
     ) => {
         return fields.map(({ name, label, referenceKey }) => {
             const options = referenceKey ? referenceBooks?.[referenceKey] || [] : null;
@@ -100,6 +98,15 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 name: 'nonResidentialUnitsCount',
                                 label: 'Количество нежилых помещений',
                                 type: 'number',
+                            },
+                            {
+                                name: 'cadastralNumber',
+                                label: 'Кадастровый номер',
+                                type: 'text',
+                            }, {
+                                name: 'classifierCode',
+                                label: 'Код ОКТМО',
+                                type: 'text',
                             },
                             { name: 'condition', label: 'Состояние дома', type: 'text' },
                         ])}
@@ -191,6 +198,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                     label: 'Тип системы горячего водоснабжения',
                                 },
                                 { name: 'sewerageSystemType', label: 'Тип системы водоотведения' },
+                                { name: 'sewerageNetworkMaterial', label: 'Материал сети' },
                             ])}
                         </Box>
 
@@ -199,36 +207,37 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 {
                                     name: 'hotWaterNetworkMaterial',
                                     label: 'Материал сети ГВС',
-                                    referenceKey: 'Материал',
+                                    referenceKey: 'Материал сети',
                                 },
                                 {
                                     name: 'hotWaterInsulationMaterial',
                                     label: 'Материал теплоизоляции сети ГВС',
-                                    referenceKey: 'Материал',
+                                    referenceKey: 'Материал сети',
                                 },
                                 {
                                     name: 'hotWaterRiserMaterial',
                                     label: 'Материал стояков ГВС',
-                                    referenceKey: 'Материал',
+                                    referenceKey: 'Материал стояков',
                                 },
-                            ])}
-                        </Box>
-                        <Box display="flex" flexWrap="wrap" gap="10px" mb="20px">
-                            {renderFields([
                                 {
                                     name: 'heatingNetworkMaterial',
                                     label: 'Материал сети отопления',
-                                    type: 'text',
+                                    referenceKey: 'Материал сети',
                                 },
                                 {
                                     name: 'heatingInsulationMaterial',
                                     label: 'Материал теплоизоляции сети отопления',
-                                    type: 'text',
+                                    referenceKey: 'Материал сети',
                                 },
                                 {
                                     name: 'heatingRiserMaterial',
                                     label: 'Материал стояков отопления',
-                                    type: 'text',
+                                    referenceKey: 'Материал стояков',
+                                },
+                                {
+                                    name: 'heatingRiserLayoutType',
+                                    label: 'Тип поквартирной разводки системы отопления',
+                                    referenceKey: 'Тип поквартирной разводки внутридомовой системы отопления',
                                 },
                             ])}
                         </Box>
@@ -258,7 +267,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
                         {renderReferenceFields([
                             {
                                 name: 'loadBearingWalls',
-                                label: 'Материал несущих стен',
+                                label: 'Несущие стены',
                             },
                             {
                                 name: 'foundationType',
@@ -312,6 +321,20 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 name: 'isCulturalHeritage',
                                 label: 'Статус объекта культурного наследия',
                             },
+                            {
+                                name: 'heatingDeviceType',
+                                label: 'Тип отопительных приборов',
+                            },
+                            {
+                                name: 'coldWaterNetworkMaterial',
+                                label: 'Материал сети ХВС',
+                                referenceKey: 'Материал сети',
+                            },
+                            {
+                                name: 'coldWaterRiserMaterial',
+                                label: "Материал сети стояков ХВС",
+                                referenceKey: 'Материал сети',
+                            },
                         ])}
                         {renderFields([
                             {
@@ -343,24 +366,23 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 type: 'number',
                             },
                             {
-                                name: 'coldWaterNetworkMaterial',
-                                label: 'Материал сети ХВС',
-                                type: 'text',
-                            },
-                            {
                                 name: 'coldWaterRiserWear',
                                 label: 'Физический износ стояков ХВС',
                                 type: 'number',
                             },
                             {
-                                name: 'coldWaterRiserMaterial',
-                                label: 'Материал стояков ХВС',
-                                type: 'text',
-                            },
-                            {
                                 name: 'coldWaterValveWear',
                                 label: 'Физический износ запорной арматуры ХВС',
                                 type: 'number',
+                            },
+                            {
+                                name: 'waterSystemValveWear',
+                                label: 'Физический износ запорной арматуры системы отопления',
+                                type: 'number',
+                            },
+                            {
+                                name: 'heatingDeviceWear',
+                                label: 'Физический износ отопительных приборов',
                             },
                         ])}
                     </Section>
