@@ -18,7 +18,7 @@ default:
     access_expires_days: 1
 
   POSTGRES:
-    host: localhost
+    host: database
     port: 5432
     user: postgres
     password: postgres
@@ -33,13 +33,13 @@ default:
 
   REDIS:
     default_database: 0
-    host: localhost
+    host: redis
     port: 6379
     time_live: 3600
 
   S3:
     port: 9000
-    host: localhost
+    host: minio
     public_host: localhost
     protocol: http
     verify: true
