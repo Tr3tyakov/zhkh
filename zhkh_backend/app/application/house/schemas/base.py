@@ -1,4 +1,5 @@
 from datetime import (
+    date,
     datetime,
 )
 from typing import Optional
@@ -26,7 +27,7 @@ class HouseBaseSchema(BaseSchema):
 
     # --- Энергоэффективность ---
     energy_efficiency_class: Optional[int] = None
-    energy_survey_date: Optional[datetime] = None
+    energy_survey_date: Optional[date] = None
 
     # --- Этажность ---
     entrances_count: Optional[int] = None
@@ -42,7 +43,7 @@ class HouseBaseSchema(BaseSchema):
     # --- Технические характеристики ---
     house_type: Optional[int] = None
     building_wear_percent: Optional[float] = None
-    building_wear_date: Optional[datetime] = None
+    building_wear_date: Optional[date] = None
 
     # --- Площади ---
     total_area: Optional[float] = None
@@ -67,7 +68,6 @@ class HouseBaseSchema(BaseSchema):
     cold_water_supply: Optional[int] = None
     electricity_supply: Optional[int] = None
     number_of_inputs: Optional[int] = None
-    supply_systems_major_repair_year: Optional[int] = None
     supply_systems_number: Optional[int] = None
 
     # --- Конструктивные элементы многоквартирного дома ---

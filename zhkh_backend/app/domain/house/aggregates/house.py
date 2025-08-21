@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import (
+    date,
     datetime,
 )
 from typing import (
@@ -33,7 +34,7 @@ class HouseAggregate(IAggregate):
 
     # --- Энергоэффективность ---
     energy_efficiency_class: Optional[str] = None
-    energy_survey_date: Optional[datetime] = None
+    energy_survey_date: Optional[date] = None
 
     # --- Этажность ---
     entrances_count: Optional[int] = None
@@ -49,7 +50,7 @@ class HouseAggregate(IAggregate):
     # --- Технические характеристики ---
     house_type: Optional[str] = None
     building_wear_percent: Optional[float] = None
-    building_wear_date: Optional[datetime] = None
+    building_wear_date: Optional[date] = None
 
     # --- Площади ---
     total_area: Optional[float] = None
@@ -73,7 +74,6 @@ class HouseAggregate(IAggregate):
     cold_water_supply: Optional[str] = None
     electricity_supply: Optional[str] = None
     number_of_inputs: Optional[int] = None
-    supply_systems_major_repair_year: Optional[int] = None
     supply_systems_number: Optional[int] = None
 
     # --- Конструктивные элементы ---

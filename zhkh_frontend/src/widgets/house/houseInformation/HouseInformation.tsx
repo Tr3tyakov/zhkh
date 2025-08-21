@@ -106,7 +106,7 @@ export const HouseInformation: React.FC<IHouseInformation> = ({ data }) => {
                             data={buildHeatingTable()}
                             motionDelay={3}
                         />
-                           <InformationTable
+                        <InformationTable
                             header="Отопительные приборы"
                             data={buildHeatingDevices()}
                             motionDelay={5}
@@ -121,7 +121,6 @@ export const HouseInformation: React.FC<IHouseInformation> = ({ data }) => {
                             data={buildColdWaterSystemRiserTable()}
                             motionDelay={5}
                         />
-
                     </Box>
                     <Box width="100%" display="flex" flexDirection="column" gap="10px">
                         <InformationTable

@@ -8,8 +8,8 @@ interface IHouse {
     street?: string;
     houseNumber?: string;
     building?: string;
-    cadastralNumber?: string
-    classifierCode?: string
+    cadastralNumber?: string;
+    classifierCode?: string;
 
     // Основные сведения
     commissioningYear?: number;

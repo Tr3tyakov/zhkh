@@ -3,6 +3,7 @@ import { Box, TextField, Typography, useTheme } from '@mui/material';
 import { IEditField } from './editField.interfaces.ts';
 import { useEnqueueSnackbar } from '../../../app/domain/hooks/useSnackbar/useEnqueueSnackbar.ts';
 import { MaskedInput } from '../../../app/domain/components/MaskedTextField.tsx';
+import dayjs from 'dayjs';
 
 export const EditField: React.FC<IEditField> = ({
     title,
@@ -17,9 +18,21 @@ export const EditField: React.FC<IEditField> = ({
     const { openSnackbar } = useEnqueueSnackbar();
 
     const isError = formik.touched[name] && Boolean(formik.errors[name]);
+
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         setIsEditing(false);
         formik.handleBlur(e);
+
+        const val = e.target.value;
+
+        // если дата -> сохраняем в ISO формате
+        if (val && type === 'date') {
+            const parsed = dayjs(val, 'DD.MM.YYYY', true);
+            if (parsed.isValid()) {
+                formik.setFieldValue(e.target.name, parsed.format('YYYY-MM-DD'));
+            }
+        }
+
         if (formik.errors[name]) {
             openSnackbar({ message: formik.errors[name] as string, variant: 'default' });
         }
@@ -37,6 +50,12 @@ export const EditField: React.FC<IEditField> = ({
             formik.setFieldTouched(name, false, false);
         }
     };
+
+    // преобразуем значение для UI (только если type = date)
+    const displayValue =
+        type === 'date' && formik.values[name]
+            ? dayjs(formik.values[name], 'YYYY-MM-DD').format('DD.MM.YYYY')
+            : formik.values[name];
 
     return (
         <Box
@@ -66,7 +85,7 @@ export const EditField: React.FC<IEditField> = ({
                     <TextField
                         variant="standard"
                         size="small"
-                        type={type}
+                        type={type === 'date' ? 'text' : type} // если дата → текстовое поле с маской
                         autoFocus
                         {...formik.getFieldProps(name)}
                         onBlur={handleBlur}
@@ -117,7 +136,7 @@ export const EditField: React.FC<IEditField> = ({
                     onClick={() => setIsEditing(true)}
                     sx={{ userSelect: 'none' }}
                 >
-                    {formik.values[name] || defaultTitle}
+                    {displayValue || defaultTitle}
                 </Typography>
             )}
         </Box>

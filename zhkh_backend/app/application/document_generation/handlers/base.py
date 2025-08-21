@@ -1,4 +1,8 @@
-from datetime import datetime
+import locale
+from datetime import (
+    date,
+    datetime,
+)
 from typing import (
     Any,
     Dict,
@@ -9,6 +13,9 @@ from app.domain.common.interfaces.repositories.reference_book_value_repository i
 )
 from app.infrastructure.common.enums.base import ResultStrategy
 from app.infrastructure.persistence.common.options import Options
+
+# Устанавливаем русскую локаль
+locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 
 
 class HouseDataMapper:
@@ -24,6 +31,13 @@ class HouseDataMapper:
         )
         return {book_value.id: book_value.value for book_value in book_values}
 
+    @staticmethod
+    def format_date(value: date | datetime | None) -> str:
+        """Форматирует дату в 'D месяц, YYYY'"""
+        if not value:
+            return ""
+        return value.strftime("%-d %B, %Y")  # %-d убирает ведущий ноль в дне
+
     async def map_house_fields(self, house) -> Dict[str, Any]:
         """Преобразует поля дома с ref_id в строки и форматирует даты"""
         ref_map = await self.get_reference_values_map()
@@ -38,8 +52,8 @@ class HouseDataMapper:
                 and val in ref_map
             ):
                 data[column.name] = ref_map[val]
-            elif isinstance(val, datetime):
-                data[column.name] = val.strftime("%d.%m.%Y")
+            elif isinstance(val, (datetime, date)):
+                data[column.name] = self.format_date(val)
             else:
                 data[column.name] = val
         return data

@@ -53,7 +53,10 @@ export const UpdateHouseHOC = (FormComponent: React.FC<any>) => {
             setIsLoading(true);
             try {
                 const data = trimObjectStrings(values);
-                await houseAPI.updateHouse(Number(id), { ...data, companyId: initialValues?.companyId });
+                await houseAPI.updateHouse(Number(id), {
+                    ...data,
+                    companyId: initialValues?.companyId,
+                });
                 await Promise.all([
                     updateState(),
                     auditLogAPI.createAuditLog({

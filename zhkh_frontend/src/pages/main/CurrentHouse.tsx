@@ -11,12 +11,15 @@ import { formatHouseAddress } from '../../widgets/house/houseInformation/houseIn
 import { LoadingProgress } from '../../shared/loading/loadingProgress/LoadingProgress.tsx';
 import { handleError } from '../../shared/common/handlerError.ts';
 import { getErrorMessage } from '../../shared/api/base.ts';
-import { ICompanyAPI, IResponseCompanyData } from '../../app/domain/services/companies/companyAPI.interfaces.ts';
+import {
+    ICompanyAPI,
+    IResponseCompanyData,
+} from '../../app/domain/services/companies/companyAPI.interfaces.ts';
 import { CompanyAPIKey } from '../../app/domain/services/companies/key.ts';
 
 function getHouseDescription(
     data?: IHouseResponse | null,
-    company?: IResponseCompanyData | null,
+    company?: IResponseCompanyData | null
 ): string {
     if (!data) return '';
 
@@ -24,18 +27,14 @@ function getHouseDescription(
         `Жилой дом${data?.city ? ` в ${data.city}` : ''}`,
         data?.street || data?.houseNumber || data?.building
             ? `по адресу${
-                data?.street ? ` ул. ${data.street}` : ''
-            }${data?.houseNumber ? ` д. ${data.houseNumber}` : ''}${
-                data?.building ? ` корп. ${data.building}` : ''
-            }`
+                  data?.street ? ` ул. ${data.street}` : ''
+              }${data?.houseNumber ? ` д. ${data.houseNumber}` : ''}${
+                  data?.building ? ` корп. ${data.building}` : ''
+              }`
             : '',
-        data?.commissioningYear
-            ? `введен в эксплуатацию в ${data.commissioningYear} году`
-            : '',
+        data?.commissioningYear ? `введен в эксплуатацию в ${data.commissioningYear} году` : '',
         data?.maxFloorsCount ? `${data.maxFloorsCount}-этажный` : '',
-        data?.totalArea
-            ? `имеет общую площадь всех помещений ${data.totalArea} кв. м`
-            : '',
+        data?.totalArea ? `имеет общую площадь всех помещений ${data.totalArea} кв. м` : '',
     ].filter(Boolean);
 
     let description = houseParts.join(', ');
@@ -82,7 +81,6 @@ export const CurrentHouse = () => {
         }
     };
 
-
     useEffect(() => {
         fetchHouseData();
     }, [houseId]);
@@ -118,11 +116,7 @@ export const CurrentHouse = () => {
                 </Typography>
                 <LoadingProgress
                     isLoading={isLoading}
-                    value={
-                        <Typography>
-                            {getHouseDescription(data, company)}
-                        </Typography>
-                    }
+                    value={<Typography>{getHouseDescription(data, company)}</Typography>}
                 />
 
                 {data && <HouseInformation data={data} />}

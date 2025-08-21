@@ -54,10 +54,7 @@ export const AuditLogsPage = () => {
 
     return (
         <Container maxWidth="lg">
-            <PageHeader
-                title="Журнал действий"
-                body=""
-            />
+            <PageHeader title="Журнал действий" body="" />
             <AuditLogsPageFilter {...usePageData} isLoading={isLoading} label="Поиск лога" />
             <PageTable
                 {...usePageData}

@@ -14,14 +14,3 @@ class UpdateHouseContract(IContract, HouseBaseSchema):
     class Config:
         alias_generator = to_camel
         validate_by_name = True
-
-    @field_validator(
-        "energy_survey_date", "building_wear_date", mode="before", check_fields=False
-    )
-    def parse_russian_date(cls, v):
-        if isinstance(v, str):
-            try:
-                return datetime.strptime(v, "%d.%m.%Y").date()
-            except ValueError:
-                raise ValueError(f"Invalid date format: {v}")
-        return v
