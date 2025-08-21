@@ -5,7 +5,6 @@ import { useInjection } from '../useInjection.ts';
 import { ICompanyAPI } from '../../services/companies/companyAPI.interfaces.ts';
 import { CompanyAPIKey } from '../../services/companies/key.ts';
 import { useEffect, useState } from 'react';
-import { ICompanyInformation } from '../../../../widgets/company/companyInformation.interfaces.ts';
 import dayjs from 'dayjs';
 
 const safe = (value: unknown): string => {
@@ -18,7 +17,7 @@ const safeBool = (value: boolean | null | undefined): string => {
 
 function formatDateDayjs(dateStr: string | null | undefined): string {
     if (!dateStr) return '';
-    return dayjs(dateStr).locale('ru').format('D MMMM, YYYY');
+    return dayjs(dateStr).locale('ru').format('DD.MM.YYYY');
 }
 
 const resolveRefValue = (
