@@ -64,6 +64,9 @@ interface IHouse {
     electricitySupply?: number;
     numberOfInputs?: number;
 
+    supplySystemsMajorRepairYear?: number;
+    supplySystemsNumber?: number;
+
     // --- Конструктивные элементы ---
     garbageChute?: boolean;
     garbageChuteType?: number;

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import (
-    date,
     datetime,
 )
 from typing import (
@@ -74,6 +73,8 @@ class HouseAggregate(IAggregate):
     cold_water_supply: Optional[str] = None
     electricity_supply: Optional[str] = None
     number_of_inputs: Optional[int] = None
+    supply_systems_major_repair_year: Optional[int] = None
+    supply_systems_number: Optional[int] = None
 
     # --- Конструктивные элементы ---
     garbage_chute: Optional[bool] = None

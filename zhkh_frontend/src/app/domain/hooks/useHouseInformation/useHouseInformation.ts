@@ -83,7 +83,7 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Дом признан аварийным', value: safeBool(house.isEmergency) },
         { title: 'Состояние дома', value: safe(house.condition) },
         { title: 'Количество квартир', value: safe(house.apartmentsCount) },
-        { title: 'Колчество нежелых помещений', value: safe(house.nonResidentialUnitsCount) },
+        { title: 'Количество нежилых помещений', value: safe(house.nonResidentialUnitsCount) },
         {
             title: 'Класс энергетической эффективности',
             value: getRef('Класс энергетической эффективности', house.energyEfficiencyClass),
@@ -112,7 +112,7 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Дата, на которую установлен износ здания', value: safe(house.buildingWearDate) },
         { title: 'Площадь многоквартирного дома, кв.м', value: safe(house.totalArea) },
         { title: 'Площадь жилых помещений, м²', value: safe(house.residentialArea) },
-        { title: 'Площадь нежелых помещений, м²', value: safe(house.nonResidentialArea) },
+        { title: 'Площадь нежилых помещений, м²', value: safe(house.nonResidentialArea) },
         { title: 'Площадь помещений общего имущества, м²', value: safe(house.commonPropertyArea) },
         { title: 'Площадь зем. участка общего имущества, м²', value: safe(house.landArea) },
         {
@@ -144,7 +144,7 @@ export const useHouseTables = (house: IHouseResponse) => {
             value: getRef('Холодное водоснабжение', house.coldWaterSupply),
         },
         { title: 'Электроснабжение', value: getRef('Электроснабжение', house.electricitySupply) },
-        { title: 'Количество вводов в дом, ед.', value: safe(house.numberOfInputs) },
+        { title: 'Количество вводов системы электроснабжения, ед.', value: safe(house.numberOfInputs) },
     ];
 
     const buildStructuralElementsTable = (): ITableInformation[] => [
@@ -166,7 +166,7 @@ export const useHouseTables = (house: IHouseResponse) => {
         },
         {
             title: 'Материал теплоизоляции сети',
-            value: getRef('Материал сети', house.hotWaterInsulationMaterial),
+            value: getRef('Материал теплоизоляции сети', house.hotWaterInsulationMaterial),
         },
         {
             title: 'Материал стояков',
@@ -186,9 +186,9 @@ export const useHouseTables = (house: IHouseResponse) => {
             value: getRef('Тип системы газоснабжения', house.gasSystemType),
         },
     ];
-
     const buildElectricSystemTable = (): ITableInformation[] => [
-        { title: 'Количество вводов системы электроснабжения', value: safe(house.numberOfInputs) },
+        { title: 'Количество вводов системы электроснабжения', value: safe(house.supplySystemsNumber) },
+        { title: 'Год проведения последнего капитального ремонта', value: safe(house.supplySystemsMajorRepairYear) },
     ];
     const buildFundamentTable = (): ITableInformation[] => [
         { title: 'Фундамент', value: getRef('Тип фундамента', house.foundationType) },
@@ -249,11 +249,11 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Материал сети', value: getRef('Материал сети', house.heatingNetworkMaterial) },
         {
             title: 'Материал теплоизоляции сети',
-            value: getRef('Материал сети', house.heatingInsulationMaterial),
+            value: getRef('Материал теплоизоляции сети', house.heatingInsulationMaterial),
         },
     ];
     const buildHeatingSystemRisersTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.heatingRiserValveWear) },
+        { title: 'Физический износ, %', value: safe(house.heatingRiserValveWear) },
         {
             title: 'Тип поквартирной разводки внутридомовой системы отопления',
             value: getRef(
@@ -264,32 +264,32 @@ export const useHouseTables = (house: IHouseResponse) => {
         { title: 'Материал', value: getRef('Материал стояков', house.heatingRiserMaterial) },
     ];
     const buildWaterSystemWearTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.waterSystemValveWear) },
+        { title: 'Физический износ, %', value: safe(house.waterSystemValveWear) },
     ];
     const buildColdWaterSystemWearTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.coldWaterValveWear) },
+        { title: 'Физический износ, %', value: safe(house.coldWaterValveWear) },
     ];
     const buildHotWaterSystemWearTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.hotWaterValveWear) },
+        { title: 'Физический износ, %', value: safe(house.hotWaterValveWear) },
     ];
 
     const buildHeatingDevices = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.heatingDeviceWear) },
-        { title: 'Тип отопительных приборов', value: getRef("Тип отопительных приборов",house.heatingDeviceType) },
+        { title: 'Физический износ, %', value: safe(house.heatingDeviceWear) },
+        { title: 'Тип отопительных приборов', value: getRef('Тип отопительных приборов', house.heatingDeviceType) },
     ];
     const buildColdWaterSystemTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.coldWaterPhysicalWear) },
+        { title: 'Физический износ, %', value: safe(house.coldWaterPhysicalWear) },
         {
             title: 'Материал сети',
             value: getRef('Материал сети', house.coldWaterNetworkMaterial),
         },
     ];
     const buildColdWaterSystemRiserTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.coldWaterRiserWear) },
+        { title: 'Физический износ, %', value: safe(house.coldWaterRiserWear) },
         { title: 'Материал сети', value: getRef('Материал сети', house.coldWaterRiserMaterial) },
     ];
     const buildHotWaterSystemRiserTable = (): ITableInformation[] => [
-        { title: 'Физический износ', value: safe(house.hotWaterRiserWear) },
+        { title: 'Физический износ, %', value: safe(house.hotWaterRiserWear) },
     ];
     const buildAdditionalInfoTable = (): ITableInformation[] => [
         { title: 'Примечание администратора', value: safe(house.note) },

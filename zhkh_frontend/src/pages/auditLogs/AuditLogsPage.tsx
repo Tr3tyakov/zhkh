@@ -56,9 +56,7 @@ export const AuditLogsPage = () => {
         <Container maxWidth="lg">
             <PageHeader
                 title="Журнал действий"
-                body="Сервис содержит информацию о домах. Введите адрес дома в поисковую строку, чтобы
-                получить подробные сведения об объекте: текущее состояние, историю изменений и
-                другую важную информацию."
+                body=""
             />
             <AuditLogsPageFilter {...usePageData} isLoading={isLoading} label="Поиск лога" />
             <PageTable

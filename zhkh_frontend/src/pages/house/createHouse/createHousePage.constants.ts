@@ -6,12 +6,6 @@ const address = [
     { name: 'building', label: 'Корпус' },
 ];
 
-const floors = [
-    { name: 'entrancesCount', label: 'Количество подъездов' },
-    { name: 'maxFloorsCount', label: 'Наибольшее количество этажей' },
-    { name: 'minFloorsCount', label: 'Наименьшее количество этажей' },
-];
-
 const squares = [
     { name: 'totalArea', label: 'Площадь многоквартирного дома, м²' },
     { name: 'residentialArea', label: 'Площадь жилых помещений, м²' },

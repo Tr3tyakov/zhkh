@@ -6,9 +6,10 @@ import { Section } from '../../shared/forms/section/Section';
 import { FieldGroup } from '../../shared/forms/group/FieldGroup';
 import { LoadingProgress } from '../../shared/loading/loadingProgress/LoadingProgress';
 import { IHouseForm } from './createHouse/createHousePage.interfaces';
-import { address, floors, squares } from './createHouse/createHousePage.constants';
+
 import { CustomSelect } from '../../app/domain/components/CustomSelect';
 import { useReferenceBook } from '../../app/domain/hooks/useReferenceBooks/useReferenceBook.ts';
+import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
 
 export const HouseForm: React.FC<IHouseForm> = ({
                                                     id,
@@ -80,37 +81,56 @@ export const HouseForm: React.FC<IHouseForm> = ({
                     <Typography fontSize={18} fontWeight={500} gutterBottom>
                         {title}
                     </Typography>
+                    <Section title="Основные сведения" icon={<ApartmentRoundedIcon color="primary" />}>
+                        <Box width="100%" display="flex" gap="4px">
+                            {renderFields([
+                                { name: 'region', label: 'Регион' },
+                                { name: 'city', label: 'Населённый пункт' },
+                                { name: 'street', label: 'Улица' },
+                                { name: 'houseNumber', label: 'Номер дома' },
+                                { name: 'building', label: 'Корпус' },
+                            ])}
+                        </Box>
 
-                    <Section title="Адрес">{renderFields(address)}</Section>
-                    <Section title="Основные сведения">
-                        {renderFields([
-                            {
-                                name: 'commissioningYear',
-                                label: 'Год ввода в эксплуатацию',
+                        <Box width="100%" display="flex" gap="4px">
+                            {renderFields([{
+                                name: 'maxFloorsCount',
+                                label: 'Максимальное количество этажей',
                                 type: 'number',
-                            },
-                            {
-                                name: 'apartmentsCount',
-                                label: 'Количество квартир',
+                            }])}
+                            {renderFields([{
+                                name: 'minFloorsCount',
+                                label: 'Минимальное количество этажей',
                                 type: 'number',
-                            },
-                            {
-                                name: 'nonResidentialUnitsCount',
-                                label: 'Количество нежилых помещений',
-                                type: 'number',
-                            },
-                            {
-                                name: 'cadastralNumber',
-                                label: 'Кадастровый номер',
-                                type: 'text',
-                            }, {
-                                name: 'classifierCode',
-                                label: 'Код ОКТМО',
-                                type: 'text',
-                            },
-                            { name: 'condition', label: 'Состояние дома', type: 'text' },
-                        ])}
+                            }])}
+                            {renderFields([{ name: 'apartmentsCount', label: 'Количество квартир', type: 'number' }])}
+                        </Box>
+
+                        {/*<CustomSelect name="capitalRepairFund" label="Формирование фонда кап. ремонта"*/}
+                        {/*              formik={formik} />*/}
+                        <Box width="100%" display="flex" gap="4px">
+                            <CustomSelect name="houseType" label="Тип дома" formik={formik} />
+                            <CustomSelect name="buildingSeries" label="Серия, тип постройки" formik={formik} />
+                        </Box>
+                        <Box width="100%" display="flex" gap="4px">
+                            {renderReferenceFields([{
+                                name: 'loadBearingWalls',
+                                label: 'Несущие стены',
+                            }, { name: 'overlapType', label: 'Тип перекрытий' }])}
+                            <CustomSelect name="garbageChuteType" label="Тип мусоропровода" formik={formik} />
+                        </Box>
+                        {renderFields([{
+                            name: 'commissioningYear',
+                            label: 'Год ввода в эксплуатацию',
+                            type: 'number',
+                        }])}
+
+                        {handleCheckbox('garbageChute')}
+                        {handleCheckbox('isEmergency')}
+                        {renderFields([{ name: 'cadastralNumber', label: 'Кадастровый номер' }])}
+                        {renderFields([{ name: 'classifierCode', label: 'Код ОКТМО' }])}
                     </Section>
+
 
                     <Section title="Энергоэффективность">
                         {renderFields([
@@ -127,7 +147,6 @@ export const HouseForm: React.FC<IHouseForm> = ({
                         />
                     </Section>
 
-                    <Section title="Этажность">{renderFields(floors)}</Section>
 
                     <Section title="Технические характеристики">
                         {renderFields([
@@ -143,7 +162,17 @@ export const HouseForm: React.FC<IHouseForm> = ({
                             },
                             {
                                 name: 'numberOfInputs',
-                                label: 'Количество вводов в дом',
+                                label: 'Количество вводов в дом, ед.',
+                                type: 'number',
+                            },
+                            {
+                                name: 'supplySystemsMajorRepairYear',
+                                label: 'Год проведения последнего капитального ремонта',
+                                type: 'number',
+                            },
+                            {
+                                name: 'supplySystemsMajorRepairYear',
+                                label: 'Год проведения последнего капитального ремонта',
                                 type: 'number',
                             },
                         ])}
@@ -155,7 +184,6 @@ export const HouseForm: React.FC<IHouseForm> = ({
                         />
                     </Section>
 
-                    <Section title="Площади">{renderFields(squares)}</Section>
 
                     <Section title="Фонды и доступность">
                         <Box display="flex" flexDirection="column" gap="10px">
@@ -212,7 +240,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 {
                                     name: 'hotWaterInsulationMaterial',
                                     label: 'Материал теплоизоляции сети ГВС',
-                                    referenceKey: 'Материал сети',
+                                    referenceKey: 'Материал теплоизоляции сети',
                                 },
                                 {
                                     name: 'hotWaterRiserMaterial',
@@ -227,7 +255,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
                                 {
                                     name: 'heatingInsulationMaterial',
                                     label: 'Материал теплоизоляции сети отопления',
-                                    referenceKey: 'Материал сети',
+                                    referenceKey: 'Материал теплоизоляции сети',
                                 },
                                 {
                                     name: 'heatingRiserMaterial',
@@ -332,7 +360,7 @@ export const HouseForm: React.FC<IHouseForm> = ({
                             },
                             {
                                 name: 'coldWaterRiserMaterial',
-                                label: "Материал сети стояков ХВС",
+                                label: 'Материал сети стояков ХВС',
                                 referenceKey: 'Материал сети',
                             },
                         ])}
