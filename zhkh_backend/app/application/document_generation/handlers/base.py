@@ -14,9 +14,6 @@ from app.domain.common.interfaces.repositories.reference_book_value_repository i
 from app.infrastructure.common.enums.base import ResultStrategy
 from app.infrastructure.persistence.common.options import Options
 
-# Устанавливаем русскую локаль
-locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
-
 
 class HouseDataMapper:
     def __init__(self, reference_book_value_repository: IReferenceBookValueRepository):
@@ -33,10 +30,10 @@ class HouseDataMapper:
 
     @staticmethod
     def format_date(value: date | datetime | None) -> str:
-        """Форматирует дату в 'D месяц, YYYY'"""
+        """Форматирует дату"""
         if not value:
             return ""
-        return value.strftime("%-d %B, %Y")  # %-d убирает ведущий ноль в дне
+        return value.strftime("%d.%m.%Y")
 
     async def map_house_fields(self, house) -> Dict[str, Any]:
         """Преобразует поля дома с ref_id в строки и форматирует даты"""
@@ -46,10 +43,10 @@ class HouseDataMapper:
         for column in house.__table__.columns:
             val = getattr(house, column.name)
             if (
-                hasattr(column, "foreign_keys")
-                and column.foreign_keys
-                and isinstance(val, int)
-                and val in ref_map
+                    hasattr(column, "foreign_keys")
+                    and column.foreign_keys
+                    and isinstance(val, int)
+                    and val in ref_map
             ):
                 data[column.name] = ref_map[val]
             elif isinstance(val, (datetime, date)):
